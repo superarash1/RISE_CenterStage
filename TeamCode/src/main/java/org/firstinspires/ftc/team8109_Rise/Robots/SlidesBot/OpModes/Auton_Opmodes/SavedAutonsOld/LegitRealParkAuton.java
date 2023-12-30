@@ -31,22 +31,6 @@ public class LegitRealParkAuton extends LinearOpMode {
 
     int cycleCounter = 1;
 
-    public enum AutonState {
-        PUSH_CONE,
-        RETURN_TO_POLE,
-        GO_TO_SCORE_PRELOAD,
-        SCORE_PRELOAD,
-        CYCLE,
-        PARK
-    }
-
-    public enum CycleState{
-        TO_CONE_STACK,
-        PICK_UP_CONE,
-        TO_HIGH_JUNCTION,
-        SCORE_CONE
-    }
-
     public enum ParkingStep{
         STEP_ONE,
         STEP_TWO
@@ -65,9 +49,6 @@ public class LegitRealParkAuton extends LinearOpMode {
     Wrist wrist;
     Claw claw;
 //    OdoRetract odoRetract;
-
-    AutonState autonState;
-    CycleState cycleState;
     ParkingStep parkingStep;
     ParkingZone parkingZone;
 
@@ -85,7 +66,6 @@ public class LegitRealParkAuton extends LinearOpMode {
 
         claw.clawState = ServoClaw.ClawState.CLOSED;
 
-        autonState = AutonState.PARK;
         parkingStep = ParkingStep.STEP_ONE;
 
         parkingZone = ParkingZone.RIGHT;
