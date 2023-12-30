@@ -11,8 +11,8 @@ import org.firstinspires.ftc.team8109_Rise.Control.MotionProfiling.TrapezoidalMo
 import org.firstinspires.ftc.team8109_Rise.Control.PID_Controller;
 import org.firstinspires.ftc.team8109_Rise.Hardware.Drivetrains.MecanumDriveTrain;
 import org.firstinspires.ftc.team8109_Rise.Math.Vectors.Vector3D;
-import org.firstinspires.ftc.team8109_Rise.Robots.SlidesBot.Sensors.IMU;
-import org.firstinspires.ftc.team8109_Rise.Robots.SlidesBot.Sensors.Odometry.OdometryLocalizer;
+import org.firstinspires.ftc.team8109_Rise.Robots.BeefCake.Sensors.IMU;
+import org.firstinspires.ftc.team8109_Rise.Robots.BeefCake.Sensors.Odometry.OdometryLocalizer;
 import org.firstinspires.ftc.team8109_Rise.Robots.BeefCake.Sensors.BeefCake_DriveConstants;
 
 public class Chassis extends MecanumDriveTrain {

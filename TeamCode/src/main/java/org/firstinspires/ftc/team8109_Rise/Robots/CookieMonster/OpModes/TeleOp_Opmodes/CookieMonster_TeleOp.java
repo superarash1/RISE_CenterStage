@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.team8109_Rise.Robots.CookieMonster.OpModes.TeleOp_Opmodes;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.team8109_Rise.Robots.CookieMonster.Mechanisms.Gate;
 import org.firstinspires.ftc.team8109_Rise.Robots.CookieMonster.Mechanisms.Optake;
 
 @TeleOp
+@Disabled
 public class CookieMonster_TeleOp extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

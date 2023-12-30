@@ -10,7 +10,7 @@ import org.firstinspires.ftc.team8109_Rise.Robots.SlidesBot.Mechanisms.ServoInta
 import org.firstinspires.ftc.team8109_Rise.Robots.SlidesBot.Mechanisms.ViperSlides;
 import org.firstinspires.ftc.team8109_Rise.Robots.SlidesBot.Mechanisms.Wrist;
 
-@TeleOp
+//@TeleOp
 public class SlidesBot_TeleOp extends LinearOpMode {
 
     @Override

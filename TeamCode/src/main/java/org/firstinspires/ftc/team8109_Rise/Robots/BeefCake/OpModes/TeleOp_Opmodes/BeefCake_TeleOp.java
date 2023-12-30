@@ -11,16 +11,22 @@ public class BeefCake_TeleOp extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Chassis chassis = new Chassis(gamepad1, telemetry, hardwareMap);
 
-        telemetry.addLine("Waiting For Start");
-
         while (opModeInInit()){
+            telemetry.addLine("Waiting For Start");
             telemetry.update();
         }
 
         while (opModeIsActive()){
             chassis.ManualDrive();
 
-            chassis.Telemetry();
+            chassis.chassisTelemetry();
+
+            chassis.update();
+
+            telemetry.addData("Pose Estimate", chassis.getPoseEstimate());
+            telemetry.addData("Getting Chassis Pose", chassis.getPoseVector());
+            telemetry.update();
+
             telemetry.update();
         }
     }
