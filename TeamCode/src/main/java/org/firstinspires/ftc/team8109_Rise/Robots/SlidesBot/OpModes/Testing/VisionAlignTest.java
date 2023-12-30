@@ -54,9 +54,9 @@ public class VisionAlignTest extends LinearOpMode {
             }
         });
 
-        chassis.TranslationalPID_X.setPIDCoefficents(0.35, 0.035, 0, 0.002);//0.03 0.001
-        chassis.TranslationalPID_Y.setPIDCoefficents(0.35, 0.035, 0, 0.002);
-        chassis.HeadingPID.setPIDCoefficents(2, 0.02, 0, 0.001); // 0.03 0.1 0.001
+        chassis.TranslationalPID_X.setPIDCoefficients(0.35, 0.035, 0, 0.002);//0.03 0.001
+        chassis.TranslationalPID_Y.setPIDCoefficients(0.35, 0.035, 0, 0.002);
+        chassis.HeadingPID.setPIDCoefficients(2, 0.02, 0, 0.001); // 0.03 0.1 0.001
         targetPose.set(51.3, -5.2, -0.6362);
 
         while (opModeInInit()){

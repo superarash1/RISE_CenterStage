@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.team8109_Rise.Control.PIDF_Controller;
+import org.firstinspires.ftc.team8109_Rise.Control.PID_Controller;
 import org.firstinspires.ftc.team8109_Rise.OldCode.Hardware.Arm;
 import org.firstinspires.ftc.team8109_Rise.OldCode.Hardware.Cage;
 import org.firstinspires.ftc.team8109_Rise.OldCode.Hardware.MecanumDriveTrain_Old;
@@ -102,13 +102,13 @@ public class RiseTeleOp_FF_Control {
 
     public driveState DriveState;
 
-    public PIDF_Controller PIDF_Drive;
-    public PIDF_Controller PIDF_Turn;
+    public PID_Controller PIDF_Drive;
+    public PID_Controller PIDF_Turn;
 
     public armState ArmState;
     public cageState CageState;
 
-    PIDF_Controller ArmPID;
+    PID_Controller ArmPID;
 
     public double boxTarget;
 
@@ -119,8 +119,8 @@ public class RiseTeleOp_FF_Control {
         gate = new Gate(GateName, hardwareMap, 0.8, 0.35, Gate.gateState.OPEN);
         intake = new OpTake(IntakeName, hardwareMap);
         cage = new Cage(CageName, hardwareMap);
-        PIDF_Drive = new PIDF_Controller(0.8, 0.00001); //0.00015
-        PIDF_Turn = new PIDF_Controller(0.6);
+        PIDF_Drive = new PID_Controller(0.8, 0.00001); //0.00015
+        PIDF_Turn = new PID_Controller(0.6);
 //
 //        // Set up webcam
 //        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -146,7 +146,7 @@ public class RiseTeleOp_FF_Control {
 //            }
 //        });
 
-        ArmPID = new PIDF_Controller(1.4, 0.00001, 0, 0.001); //1, 0, 0, 0.001   1, 0, 0, 0.0005
+        ArmPID = new PID_Controller(1.4, 0.00001, 0, 0.001); //1, 0, 0, 0.001   1, 0, 0, 0.0005
 
         ArmPID.tolerance = 0.25;
         armLeft.armMotor.setDirectionReverse();
@@ -248,7 +248,7 @@ public class RiseTeleOp_FF_Control {
         kGravity = 0.14;
         antiGravity = kGravity*(Math.cos(Math.toRadians(armLeft.armAngle())));
 //
-        armPower = ArmPID.PIDF_Power(armLeft.armAngle(), targetPos) +  antiGravity;
+        armPower = ArmPID.PID_Power(armLeft.armAngle(), targetPos) +  antiGravity;
 
         if (armLeft.armAngle() < 50){
             CageState = cageState.FLAT;
@@ -420,7 +420,7 @@ public class RiseTeleOp_FF_Control {
 
         telemetry.addData("Arm Position", armLeft.armAngle());
         telemetry.addData("Arm Target", targetPos);
-        telemetry.addData("Arm PID Output", ArmPID.PIDF_Power(armLeft.armAngle(), targetPos));
+        telemetry.addData("Arm PID Output", ArmPID.PID_Power(armLeft.armAngle(), targetPos));
         telemetry.addData("ArmPID Proportion", ArmPID.P);
         telemetry.addData("ArmPID Derivative", ArmPID.D);
         telemetry.addData("ArmPID Integral", ArmPID.I);

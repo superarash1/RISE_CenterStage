@@ -287,9 +287,9 @@ public class Red_CycleAuton_CV_Align extends LinearOpMode {
     public void autonLeftRed(){
         switch (autonState){
             case PUSH_CONE:
-                chassis.TranslationalPID_X.setPIDCoefficents(0.2, 0.01, 0, 0.002);
-                chassis.TranslationalPID_Y.setPIDCoefficents(0.2, 0.01, 0, 0.002);
-                chassis.HeadingPID.setPIDCoefficents(2, 0.02, 0, 0); // 0.03 0.1 0.001
+                chassis.TranslationalPID_X.setPIDCoefficients(0.2, 0.01, 0, 0.002);
+                chassis.TranslationalPID_Y.setPIDCoefficients(0.2, 0.01, 0, 0.002);
+                chassis.HeadingPID.setPIDCoefficients(2, 0.02, 0, 0); // 0.03 0.1 0.001
                 targetPose.set(62, -1, 0);
 
                 if (runtime.seconds() > 0.5){
@@ -304,9 +304,9 @@ public class Red_CycleAuton_CV_Align extends LinearOpMode {
                 if (withinPoseTolerance()){
                     autonState = AutonState.RETURN_TO_POLE;
 
-                    chassis.TranslationalPID_X.setPIDCoefficents(0.1, 0.01, 0, 0.002);//0.03 0.001
-                    chassis.TranslationalPID_Y.setPIDCoefficents(0.1, 0.01, 0, 0.002);
-                    chassis.HeadingPID.setPIDCoefficents(2, 0.02, 0, 0); // 0.03 0.1 0.001
+                    chassis.TranslationalPID_X.setPIDCoefficients(0.1, 0.01, 0, 0.002);//0.03 0.001
+                    chassis.TranslationalPID_Y.setPIDCoefficients(0.1, 0.01, 0, 0.002);
+                    chassis.HeadingPID.setPIDCoefficients(2, 0.02, 0, 0); // 0.03 0.1 0.001
                     runtime.reset();
 
 
@@ -327,9 +327,9 @@ public class Red_CycleAuton_CV_Align extends LinearOpMode {
 
                 if (withinPoseTolerance()){
                     autonState = AutonState.GO_TO_SCORE_PRELOAD;
-                    chassis.TranslationalPID_X.setPIDCoefficents(0.35, 0.035, 0, 0.0025);//0.03 0.001
-                    chassis.TranslationalPID_Y.setPIDCoefficents(0.35, 0.035, 0, 0.003);
-                    chassis.HeadingPID.setPIDCoefficents(2, 0.02, 0, 0.001); // 0.03 0.1 0.001
+                    chassis.TranslationalPID_X.setPIDCoefficients(0.35, 0.035, 0, 0.0025);//0.03 0.001
+                    chassis.TranslationalPID_Y.setPIDCoefficients(0.35, 0.035, 0, 0.003);
+                    chassis.HeadingPID.setPIDCoefficients(2, 0.02, 0, 0.001); // 0.03 0.1 0.001
                     runtime.reset();
                 }
                 break;
@@ -402,9 +402,9 @@ public class Red_CycleAuton_CV_Align extends LinearOpMode {
             case CYCLE:
                 switch (cycleState){
                     case TO_CONE_STACK:
-                        chassis.TranslationalPID_X.setPIDCoefficents(0.25, 0.03, 0, 0.001);//0.03 0.001
-                        chassis.TranslationalPID_Y.setPIDCoefficents(0.2, 0.035, 0.1, 0);
-                        chassis.HeadingPID.setPIDCoefficents(2.5, 0.03, 0.2, 0.002);
+                        chassis.TranslationalPID_X.setPIDCoefficients(0.25, 0.03, 0, 0.001);//0.03 0.001
+                        chassis.TranslationalPID_Y.setPIDCoefficients(0.2, 0.035, 0.1, 0);
+                        chassis.HeadingPID.setPIDCoefficients(2.5, 0.03, 0.2, 0.002);
                         targetPose.set(51.9, 24.7, -1.59);
 
                         chassis.goToPosePID(targetPose);
@@ -457,9 +457,9 @@ public class Red_CycleAuton_CV_Align extends LinearOpMode {
                         claw.clawState = ServoClaw.ClawState.CLOSED;
 
                         if (runtime.seconds() > 0.75) {
-                            chassis.TranslationalPID_X.setPIDCoefficents(0.2, 0.035, 0, 0.001);//0.03 0.001
-                            chassis.TranslationalPID_Y.setPIDCoefficents(0.25, 0.02, 0, 0.001);
-                            chassis.HeadingPID.setPIDCoefficents(0.15, 0.04, 0, 0.001); // 0.03 0.1 0.001
+                            chassis.TranslationalPID_X.setPIDCoefficients(0.2, 0.035, 0, 0.001);//0.03 0.001
+                            chassis.TranslationalPID_Y.setPIDCoefficients(0.25, 0.02, 0, 0.001);
+                            chassis.HeadingPID.setPIDCoefficients(0.15, 0.04, 0, 0.001); // 0.03 0.1 0.001
 
                             cycleState = CycleState.TO_HIGH_JUNCTION;
                             slides.slidesState = ViperSlides.SlidesState.HIGH_JUNCTION;
@@ -482,9 +482,9 @@ public class Red_CycleAuton_CV_Align extends LinearOpMode {
 
                         if (Math.abs(chassis.TranslationalPID_Y.error) < 5){
                             cycleState = CycleState.TO_HIGH_JUNCTION;
-                            chassis.TranslationalPID_X.setPIDCoefficents(0.35, 0.035, 0, 0.0025);//0.03 0.001
-                            chassis.TranslationalPID_Y.setPIDCoefficents(0.35, 0.035, 0, 0.003);
-                            chassis.HeadingPID.setPIDCoefficents(2, 0.02, 0, 0.001); // 0.03 0.1 0.001
+                            chassis.TranslationalPID_X.setPIDCoefficients(0.35, 0.035, 0, 0.0025);//0.03 0.001
+                            chassis.TranslationalPID_Y.setPIDCoefficients(0.35, 0.035, 0, 0.003);
+                            chassis.HeadingPID.setPIDCoefficients(2, 0.02, 0, 0.001); // 0.03 0.1 0.001
 
                             translationalTolerance = 1;
                             runtime.reset();

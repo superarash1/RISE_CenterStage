@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.team8109_Rise.Robots.Batholomew.Mechanisms;
+package org.firstinspires.ftc.team8109_Rise.Robots.BeefCake.Mechanisms;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -16,30 +16,14 @@ public class ViperSlides extends Slides {
 
     static double pulleyRadius = 0.752;
 
-    public double coneCount = 5;
-
     double slidesPower = 0;
 
     public enum SlidesState{
-        GROUND,
-        LOW_JUNCTION,
-        MIDDLE_JUNCTION,
-        HIGH_JUNCTION,
-        CONESTACK,
+        HOME,
+        FIRST_LINE,
+        THIRD_LINE,
         MANUAL
     }
-
-    boolean toggle1 = true;
-    boolean toggle2 = false;
-
-    boolean toggleB1 = true;
-    boolean toggleB2 = false;
-
-    boolean triggerToggle1 = true;
-    boolean triggerToggle2 = false;
-    boolean toggleManual = false;
-    boolean[] autonTestToggles = {true, false,  true, false,  true, false,  true, false, true, false};
-    boolean[] junctionToggles = {true, false,  true, false,  true, false, true, false};
 
     boolean lastToggleX = false;
     boolean lastToggleB = false;
@@ -70,7 +54,7 @@ public class ViperSlides extends Slides {
         this.telemetry = telemetry;
 
         // The starting state of the slides is to be in manual control
-        slidesState = SlidesState.GROUND;
+        slidesState = SlidesState.HOME;
     }
 
     // Method looped to continually set power to slides based on state
@@ -79,24 +63,16 @@ public class ViperSlides extends Slides {
         slidesPower = slidesPID.PID_Power(getHeight(), targetPos);
         slidesPID.tolerance = 0.001;
         switch (slidesState){
-            case GROUND:
+            case HOME:
                 targetPos = 0;
                 break;
 
-            case HIGH_JUNCTION:
+            case FIRST_LINE:
                 targetPos = 18.4;
                 break;
 
-            case MIDDLE_JUNCTION:
+            case THIRD_LINE:
                 targetPos = 10.27;
-                break;
-
-            case LOW_JUNCTION:
-                targetPos = 0.8;
-                break;
-
-            case CONESTACK:
-                targetPos = (coneCount-1)*1.25;
                 break;
 
             case MANUAL:
@@ -107,29 +83,23 @@ public class ViperSlides extends Slides {
                 } else {
                     slidesPower = 0;
                 }
-
-                //TODO: add manual arm control too (and maybe wrist as well)
-//                if (gamepad1.dpad_right){
-//                    cagePosition += 0.01;
-//                } else if (gamepad1.dpad_left){
-//                    cagePosition -= 0.01;
-//                }
                 break;
         }
         // Sets the power to the slides motors
         setPower(slidesPower);
     }
 
+
     public void toggleStates(){
         setSlidePower();
         switch (slidesState){
-            case GROUND:
+            case HOME:
                 if ((gamepad1.x != lastToggleX) && gamepad1.x){
-                    slidesState = SlidesState.HIGH_JUNCTION;
+                    slidesState = SlidesState.FIRST_LINE;
                 }
 
                 if ((gamepad1.dpad_up != lastToggleUp) && gamepad1.dpad_up){
-                    slidesState = SlidesState.LOW_JUNCTION;
+                    slidesState = SlidesState.FIRST_LINE;
                 }
 
                 if ((gamepad1.b != lastToggleB) && gamepad1.b){
@@ -137,45 +107,26 @@ public class ViperSlides extends Slides {
                 }
                 break;
 
-            case LOW_JUNCTION:
+            case FIRST_LINE:
                 if ((gamepad1.dpad_up != lastToggleUp) && gamepad1.dpad_up){
-                    slidesState = SlidesState.MIDDLE_JUNCTION;
+                    slidesState = SlidesState.THIRD_LINE;
                 }
 
                 if ((gamepad1.dpad_down != lastToggleDown) && gamepad1.dpad_down){
-                    slidesState = SlidesState.GROUND;
+                    slidesState = SlidesState.HOME;
                 }
 
                 if ((gamepad1.b != lastToggleB) && gamepad1.b){
                     slidesState = SlidesState.MANUAL;
                 }
                 break;
-            case MIDDLE_JUNCTION:
+            case THIRD_LINE:
                 if ((gamepad1.x != lastToggleX) && gamepad1.x){
-                    slidesState = SlidesState.GROUND;
-                }
-
-                if ((gamepad1.dpad_up != lastToggleUp) && gamepad1.dpad_up){
-                    slidesState = SlidesState.HIGH_JUNCTION;
+                    slidesState = SlidesState.HOME;
                 }
 
                 if ((gamepad1.dpad_down != lastToggleDown) && gamepad1.dpad_down){
-                    slidesState = SlidesState.LOW_JUNCTION;
-                }
-
-                if ((gamepad1.b != lastToggleB) && gamepad1.b){
-                    slidesState = SlidesState.MANUAL;
-                }
-                break;
-
-                //TODO:
-            case HIGH_JUNCTION:
-                if ((gamepad1.x != lastToggleX) && gamepad1.x){
-                    slidesState = SlidesState.GROUND;
-                }
-
-                if ((gamepad1.dpad_down != lastToggleDown) && gamepad1.dpad_down){
-                    slidesState = SlidesState.MIDDLE_JUNCTION;
+                    slidesState = SlidesState.FIRST_LINE;
                 }
 
                 if ((gamepad1.b != lastToggleB) && gamepad1.b){
@@ -184,7 +135,7 @@ public class ViperSlides extends Slides {
                 break;
             case MANUAL:
                 if ((gamepad1.b != lastToggleB) && gamepad1.b){
-                    slidesState = SlidesState.GROUND;
+                    slidesState = SlidesState.HOME;
                 }
                 break;
         }

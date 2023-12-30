@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.team8109_Rise.Control.PIDF_Controller;
+import org.firstinspires.ftc.team8109_Rise.Control.PID_Controller;
 import org.firstinspires.ftc.team8109_Rise.OldCode.Hardware.MecanumDriveTrain_Old;
 import org.firstinspires.ftc.team8109_Rise.OldCode.Hardware.Turret;
 import org.firstinspires.ftc.team8109_Rise.Robots.SlidesBot.Sensors.IMU;
@@ -71,15 +71,15 @@ public class TurretBotTeleOp_Control {
 
     public turretState TurretState;
 
-    public PIDF_Controller TurretPID;
-    public PIDF_Controller TurretStationPID;
+    public PID_Controller TurretPID;
+    public PID_Controller TurretStationPID;
 
     public TurretBotTeleOp_Control(String flName, String frName, String brName, String blName, String turretName, HardwareMap hardwareMap, Gamepad gamepad1, Telemetry telemetry){
 
         PhotonCore.enable();
 
-        TurretPID = new PIDF_Controller(1, 0.00001);
-        TurretStationPID = new PIDF_Controller(0.8, 0);
+        TurretPID = new PID_Controller(1, 0.00001);
+        TurretStationPID = new PID_Controller(0.8, 0);
 
         inertialMeasurementUnit = new IMU(hardwareMap);
 
@@ -184,7 +184,7 @@ public class TurretBotTeleOp_Control {
                 if (!pipeline.YellowRect.empty()){
                     boxPositionX = pipeline.YellowRect.x + (pipeline.YellowRect.width/2);
 
-                    power = -TurretPID.PIDF_Power(boxPositionX, 160);
+                    power = -TurretPID.PID_Power(boxPositionX, 160);
                 }
 
                 if (gamepad1.x != lastToggleX && gamepad1.x){
@@ -196,7 +196,7 @@ public class TurretBotTeleOp_Control {
                 break;
 
             case FIXED:
-                power = TurretPID.PIDF_Power(turret.TurretAngle() + inertialMeasurementUnit.Angle_FieldCentric(), 0) - turn * kF;
+                power = TurretPID.PID_Power(turret.TurretAngle() + inertialMeasurementUnit.Angle_FieldCentric(), 0) - turn * kF;
         }
 
         turret.turretMotor.setPower(power);

@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.team8109_Rise.Control.PIDF_Controller;
+import org.firstinspires.ftc.team8109_Rise.Control.PID_Controller;
 import org.firstinspires.ftc.team8109_Rise.OldCode.Hardware.DoubleReverse4Bar_Old;
 import org.firstinspires.ftc.team8109_Rise.OldCode.Hardware.MecanumDriveTrain_Old;
 
@@ -40,7 +40,7 @@ public class DRv4B_Test_Control {
 ///
     public Telemetry telemetry;
     public Gamepad gamepad1;
-    public PIDF_Controller Drv4B_PID;
+    public PID_Controller Drv4B_PID;
 
     barState BarState;
 
@@ -63,7 +63,7 @@ public class DRv4B_Test_Control {
         DRv4B_Right.barMotor.setDirectionReverse();
 
 //        Drv4B_PID = new PIDF_Controller(0.6, 0.00004, 0, 0.0025); //0.3
-        Drv4B_PID = new PIDF_Controller(0.015, 0.0000175, 0, 0.00075); //0.5, 0.00001
+        Drv4B_PID = new PID_Controller(0.015, 0.0000175, 0, 0.00075); //0.5, 0.00001
         Drv4B_PID.tolerance = 2;
 
         this.gamepad1 = gamepad1;
@@ -72,7 +72,7 @@ public class DRv4B_Test_Control {
     }
 
     public void DoubleReverse4Bar(){
-        drv4b_power = Drv4B_PID.PIDF_Power(DRv4B_Left.getHeight(), targetHeight);
+        drv4b_power = Drv4B_PID.PID_Power(DRv4B_Left.getHeight(), targetHeight);
         switch (BarState){
             case HOME:
                 if ((gamepad1.x != lastToggleX) && gamepad1.x && barToggle1){

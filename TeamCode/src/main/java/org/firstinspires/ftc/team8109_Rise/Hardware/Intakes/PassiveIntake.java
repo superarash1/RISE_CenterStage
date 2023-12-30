@@ -13,6 +13,7 @@ public abstract class PassiveIntake {
     public Motor motor;
     //537.7
 
+
     public PassiveIntake(int motorCount, String[] name, double cpr, Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
         Motor motors[] = new Motor[motorCount];
         for (int i = 0; i <motors.length; i++){

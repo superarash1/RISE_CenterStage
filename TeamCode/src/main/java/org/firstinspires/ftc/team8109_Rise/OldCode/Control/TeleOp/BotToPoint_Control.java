@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.team8109_Rise.Control.PIDF_Controller;
+import org.firstinspires.ftc.team8109_Rise.Control.PID_Controller;
 import org.firstinspires.ftc.team8109_Rise.OldCode.Hardware.MecanumDriveTrain_Old;
 
 public class BotToPoint_Control {
@@ -32,16 +32,16 @@ public class BotToPoint_Control {
 
     driveState DriveState;
 
-    PIDF_Controller drivePID;
-    PIDF_Controller strafePID;
-    PIDF_Controller headingPID;
+    PID_Controller drivePID;
+    PID_Controller strafePID;
+    PID_Controller headingPID;
 
     public BotToPoint_Control(String flName, String frName, String brName, String blName, HardwareMap hardwareMap, Gamepad gamepad1, Telemetry telemetry){
         driveTrain = new MecanumDriveTrain_Old(flName, frName, brName, blName, hardwareMap);
 
-        drivePID = new PIDF_Controller(0.5);
-        strafePID = new PIDF_Controller(0.5);
-        headingPID = new PIDF_Controller(0.5);
+        drivePID = new PID_Controller(0.5);
+        strafePID = new PID_Controller(0.5);
+        headingPID = new PID_Controller(0.5);
 
         drivePID.tolerance = 0.5;
         strafePID.tolerance = 0.5;
@@ -75,9 +75,9 @@ public class BotToPoint_Control {
                     DriveState = driveState.MANUAL;
                 }
 
-                drive = drivePID.PIDF_Power(driveTrain.getPoseEstimate().getX(), -10);
-                strafe = strafePID.PIDF_Power(driveTrain.getPoseEstimate().getY(), 10);
-                turn = -headingPID.PIDF_Power(driveTrain.getPoseEstimate().getHeading(), 0);
+                drive = drivePID.PID_Power(driveTrain.getPoseEstimate().getX(), -10);
+                strafe = strafePID.PID_Power(driveTrain.getPoseEstimate().getY(), 10);
+                turn = -headingPID.PID_Power(driveTrain.getPoseEstimate().getHeading(), 0);
         }
 
 

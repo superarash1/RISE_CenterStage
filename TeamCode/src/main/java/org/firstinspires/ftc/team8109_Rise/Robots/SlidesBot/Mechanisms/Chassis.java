@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.team8109_Rise.Control.MotionProfiling.TrapezoidalMotionProfile;
-import org.firstinspires.ftc.team8109_Rise.Control.PIDF_Controller;
+import org.firstinspires.ftc.team8109_Rise.Control.PID_Controller;
 import org.firstinspires.ftc.team8109_Rise.Hardware.Drivetrains.MecanumDriveTrain;
 import org.firstinspires.ftc.team8109_Rise.Math.Vectors.Vector2D;
 import org.firstinspires.ftc.team8109_Rise.Robots.SlidesBot.Sensors.IMU;
@@ -266,13 +266,13 @@ public class Chassis extends MecanumDriveTrain {
 
     Vector3D controllerInput = new Vector3D(0, 0, 0);
 
-    public PIDF_Controller TranslationalPID_X;
-    public PIDF_Controller TranslationalPID_Y;
-    public PIDF_Controller HeadingPID;
+    public PID_Controller TranslationalPID_X;
+    public PID_Controller TranslationalPID_Y;
+    public PID_Controller HeadingPID;
 
-    public PIDF_Controller visionX_PID;
-    public PIDF_Controller visionHeading_PID;
-    public PIDF_Controller IMU_PID;
+    public PID_Controller visionX_PID;
+    public PID_Controller visionHeading_PID;
+    public PID_Controller IMU_PID;
 
     public TrapezoidalMotionProfile TranslationalProfile_X;
     public TrapezoidalMotionProfile TranslationalProfile_Y;
@@ -349,15 +349,15 @@ public class Chassis extends MecanumDriveTrain {
         reset();
 
         // TODO: Tune properly (needs some derivative)
-        TranslationalPID_X = new PIDF_Controller(PID_TranslationalX_kp, PID_TranslationalX_kd, PID_TranslationalX_a, PID_TranslationalX_ki);//12.5 volts, a = 0
-        TranslationalPID_Y = new PIDF_Controller(PID_TranslationalY_kp, PID_TranslationalY_kd, PID_TranslationalY_a, PID_TranslationalY_ki);
-        HeadingPID = new PIDF_Controller(PID_Heading_kp, PID_Heading_kd, PID_Heading_a, PID_Heading_ki);
+        TranslationalPID_X = new PID_Controller(PID_TranslationalX_kp, PID_TranslationalX_kd, PID_TranslationalX_a, PID_TranslationalX_ki);//12.5 volts, a = 0
+        TranslationalPID_Y = new PID_Controller(PID_TranslationalY_kp, PID_TranslationalY_kd, PID_TranslationalY_a, PID_TranslationalY_ki);
+        HeadingPID = new PID_Controller(PID_Heading_kp, PID_Heading_kd, PID_Heading_a, PID_Heading_ki);
 
         TranslationalProfile_X = new TrapezoidalMotionProfile(SlidesBot_DriveConstants.MAX_VEL, SlidesBot_DriveConstants.MAX_ACCEL, TrapezoidalX_kp, TrapezoidalX_kv, TrapezoidalX_ka);
         TranslationalProfile_Y = new TrapezoidalMotionProfile(SlidesBot_DriveConstants.MAX_VEL, SlidesBot_DriveConstants.MAX_ACCEL, TrapezoidalY_kp, TrapezoidalY_kv, TrapezoidalY_ka);
 
-        visionX_PID = new PIDF_Controller(visionX_kp, visionX_kd, 0, visionX_ki);
-        visionHeading_PID = new PIDF_Controller(visionHeading_kp, visionHeading_kd, 0, visionHeading_ki);
+        visionX_PID = new PID_Controller(visionX_kp, visionX_kd, 0, visionX_ki);
+        visionHeading_PID = new PID_Controller(visionHeading_kp, visionHeading_kd, 0, visionHeading_ki);
 
         TranslationalPID_X.tolerance = 0.05;
         TranslationalPID_Y.tolerance = 0.05;
@@ -428,7 +428,7 @@ public class Chassis extends MecanumDriveTrain {
     public Vector3D IMU_Correction(){
         if (controllerInput.C == 0){
             targetHeading = imu.Angle_FieldCentric();
-            driftCorrection = IMU_PID.PIDF_Power(imu.Angle_FieldCentric(), targetHeading) + controllerInput.B*kDrift;
+            driftCorrection = IMU_PID.PID_Power(imu.Angle_FieldCentric(), targetHeading) + controllerInput.B*kDrift;
         }else {
             driftCorrection = controllerInput.B*kDrift;
         }
@@ -494,9 +494,9 @@ public class Chassis extends MecanumDriveTrain {
     }
 
     public void goToPosePID(Vector3D input){
-        odoDrive = -TranslationalPID_X.PIDF_Power(getPoseEstimate().getX(), input.A);
-        odoStrafe = -TranslationalPID_Y.PIDF_Power(getPoseEstimate().getY(), input.B);
-        odoTurn = -HeadingPID.PIDF_Power(angleWrap(getPoseEstimate().getHeading()), input.C);
+        odoDrive = -TranslationalPID_X.PID_Power(getPoseEstimate().getX(), input.A);
+        odoStrafe = -TranslationalPID_Y.PID_Power(getPoseEstimate().getY(), input.B);
+        odoTurn = -HeadingPID.PID_Power(angleWrap(getPoseEstimate().getHeading()), input.C);
 
         odoPID_Vector.set(odoDrive, odoStrafe, odoTurn);
         // Vector fields vector sum
@@ -509,7 +509,7 @@ public class Chassis extends MecanumDriveTrain {
     public void goToPoseTrapezoidal(Vector3D input){
         odoDrive = -TranslationalProfile_X.getProfilePower(getPoseEstimate().getX(), input.A);
         odoStrafe = -TranslationalProfile_Y.getProfilePower(getPoseEstimate().getY(), input.B);
-        odoTurn = -HeadingPID.PIDF_Power(angleWrap(getPoseEstimate().getHeading()), input.C);
+        odoTurn = -HeadingPID.PID_Power(angleWrap(getPoseEstimate().getHeading()), input.C);
 
         odoPID_Vector.set(odoDrive, odoStrafe, odoTurn);
         // Vector fields vector sum
@@ -548,14 +548,14 @@ public class Chassis extends MecanumDriveTrain {
                     case RED:
                         if (!pipeline.RedRect.empty()){
 //                            visionDrive = visionX_PID.PIDF_Power(pipeline.RedRect.y + (pipeline.RedRect.height/2), input.A); //220
-                            visionDrive = visionX_PID.PIDF_Power(pipeline.RedRect.width, input.A); //220
-                            visionTurn = -visionHeading_PID.PIDF_Power(pipeline.getRectX(pipeline.RedRect), input.B); //160
+                            visionDrive = visionX_PID.PID_Power(pipeline.RedRect.width, input.A); //220
+                            visionTurn = -visionHeading_PID.PID_Power(pipeline.getRectX(pipeline.RedRect), input.B); //160
                         }
                         break;
                     case BLUE:
                         if (!pipeline.BlueRect.empty()){
-                            visionDrive = visionX_PID.PIDF_Power(pipeline.BlueRect.width, input.A); //220
-                            visionTurn = -visionHeading_PID.PIDF_Power(pipeline.getRectX(pipeline.BlueRect), input.B); //160
+                            visionDrive = visionX_PID.PID_Power(pipeline.BlueRect.width, input.A); //220
+                            visionTurn = -visionHeading_PID.PID_Power(pipeline.getRectX(pipeline.BlueRect), input.B); //160
                         }
                         break;
                 }
@@ -563,8 +563,8 @@ public class Chassis extends MecanumDriveTrain {
 
             case JUNCTION:
                 if (!pipeline.YellowRect.empty()){
-                    visionDrive = -visionX_PID.PIDF_Power(pipeline.YellowRect.width, input.A); //
-                    visionTurn = -visionHeading_PID.PIDF_Power(pipeline.getRectX(pipeline.YellowRect), input.B);
+                    visionDrive = -visionX_PID.PID_Power(pipeline.YellowRect.width, input.A); //
+                    visionTurn = -visionHeading_PID.PID_Power(pipeline.getRectX(pipeline.YellowRect), input.B);
                 }
                 break;
             case NONE:

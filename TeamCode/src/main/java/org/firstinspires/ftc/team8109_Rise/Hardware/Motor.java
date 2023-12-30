@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.team8109_Rise.Control.PIDF_Controller;
+import org.firstinspires.ftc.team8109_Rise.Control.PID_Controller;
 
 public class Motor {
     public DcMotorEx dcMotorEx;
@@ -29,12 +29,12 @@ public class Motor {
        Parameter name : Pass in name of the motor on the RC phone config
        Parameter hwmap : Pass in the hardwareMap from OpMode to initialize the motor */
 
-    PIDF_Controller motorVeloPID;
+    PID_Controller motorVeloPID;
 
     public Motor(String name, HardwareMap hwmap){
         dcMotorEx = hwmap.get(DcMotorEx.class, name);
 
-        motorVeloPID = new PIDF_Controller(1);
+        motorVeloPID = new PID_Controller(1);
     }
 
     /* Constructor for dead wheel encoders
@@ -50,7 +50,7 @@ public class Motor {
         TICKS_PER_DEGREE = (TICKS_PER_REV / 360);
         TICKS_PER_RADIAN = (TICKS_PER_REV / (2*Math.PI));
         
-        motorVeloPID = new PIDF_Controller(1);
+        motorVeloPID = new PID_Controller(1);
     }
 
     public Motor(String name , double cpr, double kp, double kd, double ki, HardwareMap hwmap){
@@ -60,7 +60,7 @@ public class Motor {
         TICKS_PER_DEGREE = (TICKS_PER_REV / 360);
         TICKS_PER_RADIAN = (TICKS_PER_REV / (2*Math.PI));
 
-        motorVeloPID = new PIDF_Controller(kp, kd, ki);
+        motorVeloPID = new PID_Controller(kp, kd, ki);
     }
 
     public void reset(){
@@ -120,7 +120,7 @@ public class Motor {
 
     //TODO: Test
     public void setVelocity(double ω){
-        dcMotorEx.setPower(motorVeloPID.PIDF_Power(dcMotorEx.getVelocity(AngleUnit.DEGREES), ω));
+        dcMotorEx.setPower(motorVeloPID.PID_Power(dcMotorEx.getVelocity(AngleUnit.DEGREES), ω));
     }
     public void setVelocity(double ω, AngleUnit angleUnit){
         dcMotorEx.setVelocity(ω, angleUnit);

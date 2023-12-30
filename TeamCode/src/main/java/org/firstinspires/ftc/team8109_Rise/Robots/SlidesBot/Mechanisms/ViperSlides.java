@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.team8109_Rise.Control.PIDF_Controller;
+import org.firstinspires.ftc.team8109_Rise.Control.PID_Controller;
 import org.firstinspires.ftc.team8109_Rise.Hardware.Lifts.Slides;
 
 public class ViperSlides extends Slides {
@@ -55,7 +55,7 @@ public class ViperSlides extends Slides {
 
     public SlidesState slidesState;
 
-    public PIDF_Controller slidesPID;
+    public PID_Controller slidesPID;
 
 
 
@@ -64,7 +64,7 @@ public class ViperSlides extends Slides {
 
         // ki: 0.005
 //        slidesPID = new PIDF_Controller(0.04, 0.03, 0, 0.01); //0.01
-        slidesPID = new PIDF_Controller(0.31, 0.03, 0, 0.01); //0.07, 0.0035, 0, 0.01
+        slidesPID = new PID_Controller(0.31, 0.03, 0, 0.01); //0.07, 0.0035, 0, 0.01
 
         //slidesPID = new PIDF_Controller(0.5, 0.05, 0, 0.04);
         //slidesPID = new PIDF_Controller(0.05, 0.0035, 0, 0.005); //0.0175, 0.
@@ -106,45 +106,45 @@ public class ViperSlides extends Slides {
 
                 l is) */
 
-                slidesPower = slidesPID.PIDF_Power(getHeight(), 0);
+                slidesPower = slidesPID.PID_Power(getHeight(), 0);
                 break;
 
             case HIGH_JUNCTION:
                 /* PID controller calculates the power needed to be set to the motors
                 to stay at the target position (of 36 inches as my guess of wha the high level is) */
-                slidesPower = slidesPID.PIDF_Power(getHeight(), 18.4); // 18
+                slidesPower = slidesPID.PID_Power(getHeight(), 18.4); // 18
 
                 break;
 
             case MIDDLE_JUNCTION:
-                slidesPower = slidesPID.PIDF_Power(getHeight(), 10.27); // 9.4
+                slidesPower = slidesPID.PID_Power(getHeight(), 10.27); // 9.4
                 break;
 
             case LOW_JUNCTION:
-                slidesPower = slidesPID.PIDF_Power(getHeight(), 0.8); // 18.5
+                slidesPower = slidesPID.PID_Power(getHeight(), 0.8); // 18.5
                 break;
             case CONESTACK_BOTTOM_MIDDLE:
-                slidesPower = slidesPID.PIDF_Power(getHeight(), 1.25);
+                slidesPower = slidesPID.PID_Power(getHeight(), 1.25);
                 break;
 
             case CONESTACK_MIDDLE:
-                slidesPower = slidesPID.PIDF_Power(getHeight(), 2.95);
+                slidesPower = slidesPID.PID_Power(getHeight(), 2.95);
                 break;
 
             case CONESTACK_TOP_MIDDLE:
-                slidesPower = slidesPID.PIDF_Power(getHeight(), 4.11);
+                slidesPower = slidesPID.PID_Power(getHeight(), 4.11);
                 break;
 
             case CONESTACK_TOP:
-                slidesPower = slidesPID.PIDF_Power(getHeight(), 5.45);
+                slidesPower = slidesPID.PID_Power(getHeight(), 5.45);
                 break;
             case LOW_DUNK:
-                slidesPower = slidesPID.PIDF_Power(getHeight(), 0); // 18.5
+                slidesPower = slidesPID.PID_Power(getHeight(), 0); // 18.5
             case MIDDLE_DUNK:
-                slidesPower = slidesPID.PIDF_Power(getHeight(), 6.4); // 18.5
+                slidesPower = slidesPID.PID_Power(getHeight(), 6.4); // 18.5
                 break;
             case HIGH_DUNK:
-                slidesPower = slidesPID.PIDF_Power(getHeight(), 14.7);
+                slidesPower = slidesPID.PID_Power(getHeight(), 14.7);
                 break;
         }
     }

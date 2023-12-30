@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.team8109_Rise.Control.PIDF_Controller;
+import org.firstinspires.ftc.team8109_Rise.Control.PID_Controller;
 import org.firstinspires.ftc.team8109_Rise.OldCode.Hardware.MecanumDriveTrain_Old;
 import org.firstinspires.ftc.team8109_Rise.OldCode.Hardware.Turret;
 import org.firstinspires.ftc.team8109_Rise.Sensors.Camera.OpenCV.VisionPipelines.PersonTracker;
@@ -77,16 +77,16 @@ public class PersonTrackControl {
     public turretState TurretState;
     public turretSearch TurretSearch;
 
-    public PIDF_Controller PIDF_Drive;
-    public PIDF_Controller PIDF_Turn;
-    public PIDF_Controller TurretPID;
+    public PID_Controller PIDF_Drive;
+    public PID_Controller PIDF_Turn;
+    public PID_Controller TurretPID;
 
     public PersonTrackControl(String flName, String frName, String brName, String blName, String turretName, HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamepad1){
-        PIDF_Drive = new PIDF_Controller(1, 0); //0.00015
-        PIDF_Turn = new PIDF_Controller(0.6);
+        PIDF_Drive = new PID_Controller(1, 0); //0.00015
+        PIDF_Turn = new PID_Controller(0.6);
 
         //TODO: Re-tune for new faster motor
-        TurretPID = new PIDF_Controller(1);
+        TurretPID = new PID_Controller(1);
 
         // Set up webcam
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -155,8 +155,8 @@ public class PersonTrackControl {
                     personPositionX = pipeline.getRectCenterX(pipeline.TargetRect);
                     personPositionY = pipeline.getRectCenterY(pipeline.TargetRect);
 
-                    drive = -PIDF_Drive.PIDF_Power(240 - personPositionY, 220); //0.00002
-                    turn = -PIDF_Turn.PIDF_Power(personPositionX, 160);
+                    drive = -PIDF_Drive.PID_Power(240 - personPositionY, 220); //0.00002
+                    turn = -PIDF_Turn.PID_Power(personPositionX, 160);
                     strafe = 0;
 
                     DriveLostTimer.reset();
@@ -186,7 +186,7 @@ public class PersonTrackControl {
 
             case ALIGN:
 
-                turn = PIDF_Turn.PIDF_Power(turret.TurretAngle(), 0);
+                turn = PIDF_Turn.PID_Power(turret.TurretAngle(), 0);
 
                 if (Math.abs(PIDF_Turn.error) < PIDF_Turn.tolerance){
                     TurretState = turretState.RETURN;
@@ -231,7 +231,7 @@ public class PersonTrackControl {
                 if (!pipeline.TargetRect.empty()){
                     personPositionX = pipeline.getRectCenterX(pipeline.TargetRect);
 
-                    turretPower = -TurretPID.PIDF_Power(personPositionX, 160);
+                    turretPower = -TurretPID.PID_Power(personPositionX, 160);
                 }
 
                 if (gamepad1.y != lastToggleY && gamepad1.y && turretToggle2){
@@ -246,7 +246,7 @@ public class PersonTrackControl {
 
             // TODO: add a state to return the initial angle when vision drive turns on and PID there until TURN_TRACKING
             case RETURN:
-                turretPower = TurretPID.PIDF_Power(turret.TurretAngle(), 0);
+                turretPower = TurretPID.PID_Power(turret.TurretAngle(), 0);
 
                 if (Math.abs(TurretPID.error) < TurretPID.tolerance){
                     DriveState = driveState.DRIVE_TRACKING;
@@ -268,7 +268,7 @@ public class PersonTrackControl {
                         if (!pipeline.TargetRect.empty()){
                             personPositionX = pipeline.getRectCenterX(pipeline.TargetRect);
 
-                            turretPower = -TurretPID.PIDF_Power(personPositionX, 160);
+                            turretPower = -TurretPID.PID_Power(personPositionX, 160);
                             TurretLostTimer.reset();
                         }
 

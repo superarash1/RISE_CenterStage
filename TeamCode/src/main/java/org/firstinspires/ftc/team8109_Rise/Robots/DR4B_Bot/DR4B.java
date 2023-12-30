@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.team8109_Rise.Control.PIDF_Controller;
+import org.firstinspires.ftc.team8109_Rise.Control.PID_Controller;
 import org.firstinspires.ftc.team8109_Rise.Hardware.Lifts.DoubleReverse4Bar;
 import org.firstinspires.ftc.team8109_Rise.OldCode.Hardware.Claw;
 
@@ -48,7 +48,7 @@ public class DR4B extends DoubleReverse4Bar {
 
     liftState LiftState;
 
-    public PIDF_Controller DR4B_PID;
+    public PID_Controller DR4B_PID;
 
     public DR4B(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
         super("dr4bLeft", "dr4bRight",
@@ -56,7 +56,7 @@ public class DR4B extends DoubleReverse4Bar {
                 hardwareMap);
 
         claw = new Claw("claw", hardwareMap);
-        DR4B_PID = new PIDF_Controller(0.025, 0.007, 0, 0.008); //0.015
+        DR4B_PID = new PID_Controller(0.025, 0.007, 0, 0.008); //0.015
         LiftState = liftState.MANUAL;
 
         DR4B_PID.tolerance = 0.5;
@@ -68,7 +68,7 @@ public class DR4B extends DoubleReverse4Bar {
     }
 
     public void Set_DR4B_Power(){
-        DR4B_Power = DR4B_PID.PIDF_Power(getHeight(), targetHeight);
+        DR4B_Power = DR4B_PID.PID_Power(getHeight(), targetHeight);
         switch (LiftState){
             case HOME:
                 targetHeight = 4.5;

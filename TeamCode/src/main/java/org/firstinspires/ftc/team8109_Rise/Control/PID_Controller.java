@@ -2,7 +2,7 @@ package org.firstinspires.ftc.team8109_Rise.Control;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class PIDF_Controller {
+public class PID_Controller {
 
     public ElapsedTime runtime = new ElapsedTime();
 
@@ -30,38 +30,26 @@ public class PIDF_Controller {
 
     public double errorChange;
 
-    public PIDF_Controller(double kp){
-        this.kp = kp;
-
-        a = 0;
-        kd = 0;
-        ki = 0;
+    public PID_Controller(double kp){
+        this(kp, 0, 0, 0);
     }
 
-    public PIDF_Controller(double kp, double kd){
-        this.kp = kp;
-        this.kd = kd;
-
-        a = 0;
-        ki = 0;
+    public PID_Controller(double kp, double kd){
+        this(kp, kd, 0, 0);
     }
 
-    public PIDF_Controller(double kp, double kd, double a){
-        this.kp = kp;
-        this.kd = kd;
-        this.a = a;
-
-        ki = 0;
+    public PID_Controller(double kp, double kd, double a){
+        this(kp, kd, a, 0);
     }
 
-    public PIDF_Controller(double kp, double kd, double a, double ki){
+    public PID_Controller(double kp, double kd, double a, double ki){
         this.kp = kp;
         this.kd = kd;
         this.a = a;
         this.ki = ki;
     }
 
-    public double PIDF_Power(double currPos, double targetPos){
+    public double PID_Power(double currPos, double targetPos){
         error = targetPos - currPos;
         errorChange = error - previousError;
 
@@ -92,7 +80,7 @@ public class PIDF_Controller {
     }
 
 
-    public double PID_Controller(double currPos, double targetPos){
+    public double PID_PowerBasic(double currPos, double targetPos){
         error = targetPos - currPos;
 
         errorChange = error - previousError;
@@ -116,22 +104,22 @@ public class PIDF_Controller {
     }
 
 
-    public void setPIDCoefficents(double kp){
+    public void setPIDCoefficients(double kp){
         this.kp = kp;
     }
 
-    public void setPIDCoefficents(double kp, double kd){
+    public void setPIDCoefficients(double kp, double kd){
         this.kp = kp;
         this.kd = kd;
     }
 
-    public void setPIDCoefficents(double kp, double kd, double a){
+    public void setPIDCoefficients(double kp, double kd, double a){
         this.kp = kp;
         this.kd = kd;
         this.a = a;
     }
 
-    public void setPIDCoefficents(double kp, double kd, double a, double ki){
+    public void setPIDCoefficients(double kp, double kd, double a, double ki){
         this.kp = kp;
         this.kd = kd;
         this.a = a;

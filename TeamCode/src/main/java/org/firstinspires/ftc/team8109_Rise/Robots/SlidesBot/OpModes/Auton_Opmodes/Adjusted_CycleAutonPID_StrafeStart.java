@@ -222,9 +222,9 @@ public class Adjusted_CycleAutonPID_StrafeStart extends LinearOpMode {
     public void autonLeftRed(){
         switch (autonState){
             case PUSH_CONE:
-                chassis.TranslationalPID_X.setPIDCoefficents(0.15, 0.01, 0, 0.001);
-                chassis.TranslationalPID_Y.setPIDCoefficents(0.15, 0.01, 0, 0.001);
-                chassis.HeadingPID.setPIDCoefficents(1.5, 0.02, 0, 0); // 0.03 0.1 0.001
+                chassis.TranslationalPID_X.setPIDCoefficients(0.15, 0.01, 0, 0.001);
+                chassis.TranslationalPID_Y.setPIDCoefficients(0.15, 0.01, 0, 0.001);
+                chassis.HeadingPID.setPIDCoefficients(1.5, 0.02, 0, 0); // 0.03 0.1 0.001
                 targetPose.set(-3, 48, Math.toRadians(2));
 
                 if (runtime.seconds() > 0.3){
@@ -244,9 +244,9 @@ public class Adjusted_CycleAutonPID_StrafeStart extends LinearOpMode {
 //                    chassis.TranslationalPID_Y.setPIDCoefficents(0.1, 0.01, 0, 0.002);
 //                    chassis.HeadingPID.setPIDCoefficents(2, 0.02, 0, 0); // 0.03 0.1 0.001
 
-                    chassis.TranslationalPID_X.setPIDCoefficents(0.35, 0.0375, 0, 0.0025);//0.03 0.001
-                    chassis.TranslationalPID_Y.setPIDCoefficents(0.4, 0.0375, 0, 0.01);
-                    chassis.HeadingPID.setPIDCoefficents(2, 0.02, 0, 0.001);
+                    chassis.TranslationalPID_X.setPIDCoefficients(0.35, 0.0375, 0, 0.0025);//0.03 0.001
+                    chassis.TranslationalPID_Y.setPIDCoefficients(0.4, 0.0375, 0, 0.01);
+                    chassis.HeadingPID.setPIDCoefficients(2, 0.02, 0, 0.001);
                     runtime.reset();
 
                     // TODO: Y negative left
@@ -353,9 +353,9 @@ public class Adjusted_CycleAutonPID_StrafeStart extends LinearOpMode {
                 switch (cycleState){
                     case TO_CONE_STACK:
                         translationalTolerance = 0.25;
-                        chassis.TranslationalPID_X.setPIDCoefficents(0.25, 0.0375, 0, 0.006);//0.03 0.001
-                        chassis.TranslationalPID_Y.setPIDCoefficents(0.25, 0.0375, 0, 0.0015);
-                        chassis.HeadingPID.setPIDCoefficents(2.5, 0.03, 0, 0.0015);
+                        chassis.TranslationalPID_X.setPIDCoefficients(0.25, 0.0375, 0, 0.006);//0.03 0.001
+                        chassis.TranslationalPID_Y.setPIDCoefficients(0.25, 0.0375, 0, 0.0015);
+                        chassis.HeadingPID.setPIDCoefficients(2.5, 0.03, 0, 0.0015);
                         targetPose.set(-25.3, 50.5, 0.14); //-25.4, 48.65, 0.14
 
                         chassis.goToPosePID(targetPose);
@@ -408,9 +408,9 @@ public class Adjusted_CycleAutonPID_StrafeStart extends LinearOpMode {
                         claw.clawState = ServoClaw.ClawState.CLOSED;
 
                         if (runtime.seconds() > 0.25) {
-                            chassis.TranslationalPID_X.setPIDCoefficents(0.13, 0.0375, 0, 0.001);//0.03 0.001
-                            chassis.TranslationalPID_Y.setPIDCoefficents(0.1, 0.0375, 0, 0.001);
-                            chassis.HeadingPID.setPIDCoefficents(1.5, 0.03, 0, 0.001);
+                            chassis.TranslationalPID_X.setPIDCoefficients(0.13, 0.0375, 0, 0.001);//0.03 0.001
+                            chassis.TranslationalPID_Y.setPIDCoefficients(0.1, 0.0375, 0, 0.001);
+                            chassis.HeadingPID.setPIDCoefficients(1.5, 0.03, 0, 0.001);
 
 //                            chassis.TranslationalPID_X.setPIDCoefficents(0.15, 0.0375, 0, 0.001);//0.03 0.001
 //                            chassis.TranslationalPID_Y.setPIDCoefficents(0.2, 0.0375, 0, 0.001);

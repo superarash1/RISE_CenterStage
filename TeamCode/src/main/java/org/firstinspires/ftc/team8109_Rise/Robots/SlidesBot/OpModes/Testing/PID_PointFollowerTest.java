@@ -16,9 +16,9 @@ public class PID_PointFollowerTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         chassis = new Chassis(gamepad1, telemetry, hardwareMap);
 
-        chassis.TranslationalPID_X.setPIDCoefficents(0.13, 0.0375, 0, 0.001);//0.03 0.001
-        chassis.TranslationalPID_Y.setPIDCoefficents(0.13, 0.0375, 0, 0.001);
-        chassis.HeadingPID.setPIDCoefficents(1.5, 0.04, 0, 0);
+        chassis.TranslationalPID_X.setPIDCoefficients(0.13, 0.0375, 0, 0.001);//0.03 0.001
+        chassis.TranslationalPID_Y.setPIDCoefficients(0.13, 0.0375, 0, 0.001);
+        chassis.HeadingPID.setPIDCoefficients(1.5, 0.04, 0, 0);
 
         waitForStart();
 

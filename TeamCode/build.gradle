@@ -36,6 +36,4 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7'
 
     implementation 'com.github.Eeshwar-Krishnan:PhotonFTC:v2.0.0-Alpha'
-
-
 }

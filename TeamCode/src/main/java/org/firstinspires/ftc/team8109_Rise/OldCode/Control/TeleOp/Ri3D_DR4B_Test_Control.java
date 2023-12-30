@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.team8109_Rise.Control.PIDF_Controller;
+import org.firstinspires.ftc.team8109_Rise.Control.PID_Controller;
 import org.firstinspires.ftc.team8109_Rise.OldCode.Hardware.DoubleReverse4Bar_Old;
 
 public class Ri3D_DR4B_Test_Control {
@@ -24,14 +24,14 @@ public class Ri3D_DR4B_Test_Control {
 
     public Telemetry telemetry;
     public Gamepad gamepad1;
-    public PIDF_Controller BarPID;
+    public PID_Controller BarPID;
 
     barState BarState;
 
     public Ri3D_DR4B_Test_Control(String BarMotorName, Telemetry telemetry, Gamepad gamepad1, HardwareMap hardwareMap){
         DR4B = new DoubleReverse4Bar_Old(BarMotorName, 1, hardwareMap);
 
-        BarPID = new PIDF_Controller(5.25, 0.0001, 0, 0.001); //5.25, 0.0001
+        BarPID = new PID_Controller(5.25, 0.0001, 0, 0.001); //5.25, 0.0001
         BarPID.tolerance = 2;
 
         this.gamepad1 = gamepad1;
@@ -42,7 +42,7 @@ public class Ri3D_DR4B_Test_Control {
     public void DoubleReverse4Bar_Motion(){
         switch (BarState){
             case INTAKE:
-                power = BarPID.PIDF_Power(DR4B.barMotor.getCurrPosDegrees(), 0);
+                power = BarPID.PID_Power(DR4B.barMotor.getCurrPosDegrees(), 0);
                 DR4B.barMotor.setPower(power);
 
                 if ((gamepad1.x != lastToggleX) && gamepad1.x && barToggle1){
@@ -57,7 +57,7 @@ public class Ri3D_DR4B_Test_Control {
                 break;
 
             case SCORE_HIGH:
-                power = BarPID.PIDF_Power(DR4B.barMotor.getCurrPosDegrees(), -110);
+                power = BarPID.PID_Power(DR4B.barMotor.getCurrPosDegrees(), -110);
                 DR4B.barMotor.setPower(power);
 
                 if ((gamepad1.x != lastToggleX) && gamepad1.x && barToggle2){

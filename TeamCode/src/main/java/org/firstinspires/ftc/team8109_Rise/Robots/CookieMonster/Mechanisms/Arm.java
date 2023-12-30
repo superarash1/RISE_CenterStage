@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.team8109_Rise.Control.PIDF_Controller;
+import org.firstinspires.ftc.team8109_Rise.Control.PID_Controller;
 import org.firstinspires.ftc.team8109_Rise.Hardware.Arms.MotorArm;
 
 public class Arm extends MotorArm {
@@ -32,7 +32,7 @@ public class Arm extends MotorArm {
         MANUAL
     }
 
-    public PIDF_Controller ArmPID;
+    public PID_Controller ArmPID;
     ArmState armState;
     ArmState originalState;
     public Arm(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap) {
@@ -44,7 +44,7 @@ public class Arm extends MotorArm {
         motors[1].setDirectionReverse();
 
         //0.0001
-        ArmPID = new PIDF_Controller(0.0065, 0.0006, 0, 0.00045);
+        ArmPID = new PID_Controller(0.0065, 0.0006, 0, 0.00045);
 
         targetAngle = -33.7;
 
@@ -55,7 +55,7 @@ public class Arm extends MotorArm {
     }
 
     public void SetArmPower(){
-        ArmPower = ArmPID.PIDF_Power(getAngleDegrees(), targetAngle);
+        ArmPower = ArmPID.PID_Power(getAngleDegrees(), targetAngle);
         switch (armState){
             case HOME:
                 targetAngle = -33.7;

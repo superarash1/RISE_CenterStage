@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.team8109_Rise.Control.PIDF_Controller;
+import org.firstinspires.ftc.team8109_Rise.Control.PID_Controller;
 import org.firstinspires.ftc.team8109_Rise.Hardware.Intakes.PassiveIntake;
 
 public class Optake extends PassiveIntake {
@@ -20,12 +20,12 @@ public class Optake extends PassiveIntake {
 
     IntakeState intakeState;
 
-    PIDF_Controller IntakePID;
+    PID_Controller IntakePID;
 
     public Optake(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
         super("intakeMotor", 537.7, gamepad1, telemetry, hardwareMap);
 
-        IntakePID = new PIDF_Controller(0);
+        IntakePID = new PID_Controller(0);
 
         this.gamepad1 = gamepad1;
         this.telemetry = telemetry;

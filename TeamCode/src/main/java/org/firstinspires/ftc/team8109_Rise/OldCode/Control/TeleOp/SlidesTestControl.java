@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.team8109_Rise.Control.PIDF_Controller;
+import org.firstinspires.ftc.team8109_Rise.Control.PID_Controller;
 import org.firstinspires.ftc.team8109_Rise.OldCode.Hardware.MecanumDriveTrain_Old;
 import org.firstinspires.ftc.team8109_Rise.OldCode.Hardware.Slides;
 
@@ -43,7 +43,7 @@ public class SlidesTestControl {
 
     double height = 10;
 
-    PIDF_Controller slidesPID;
+    PID_Controller slidesPID;
     slideState SlideState;
 
     public SlidesTestControl(String flName, String frName, String brName, String blName, Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
@@ -58,7 +58,7 @@ public class SlidesTestControl {
         this.gamepad1 = gamepad1;
         this.telemetry = telemetry;
 
-        slidesPID = new PIDF_Controller(0.5);
+        slidesPID = new PID_Controller(0.5);
         SlideState = slideState.IDLE;
     }
 
@@ -73,7 +73,7 @@ public class SlidesTestControl {
 
                 break;
             case HOME:
-                drawerSlides.slidesMotor.setPower(slidesPID.PIDF_Power(drawerSlides.getHeight(), 0));
+                drawerSlides.slidesMotor.setPower(slidesPID.PID_Power(drawerSlides.getHeight(), 0));
 
                 if ((gamepad1.dpad_up != lastToggleUp) && gamepad1.dpad_up && slidesToggle1){
                     slidesToggle1 = false;
@@ -86,7 +86,7 @@ public class SlidesTestControl {
 
                 break;
             case FIVE_INCHES:
-                drawerSlides.slidesMotor.setPower(slidesPID.PIDF_Power(drawerSlides.getHeight(), 5));
+                drawerSlides.slidesMotor.setPower(slidesPID.PID_Power(drawerSlides.getHeight(), 5));
 
                 if ((gamepad1.dpad_up != lastToggleUp) && gamepad1.dpad_up && slidesToggle3){
                     slidesToggle3 = false;
@@ -108,7 +108,7 @@ public class SlidesTestControl {
                 break;
 
             case TEN_INCHES:
-                drawerSlides.slidesMotor.setPower(slidesPID.PIDF_Power(drawerSlides.getHeight(), 10));
+                drawerSlides.slidesMotor.setPower(slidesPID.PID_Power(drawerSlides.getHeight(), 10));
 
                 if ((gamepad1.dpad_down != lastToggleDown) && gamepad1.dpad_down && slidesToggle4){
                     slidesToggle4 = false;
