@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.team8109_Rise.Robots.BeefCake.Mechanisms;
 
-import com.acmerobotics.roadrunner.control.PIDCoefficients;
-import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
-import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -21,95 +18,27 @@ public class Chassis extends MecanumDriveTrain {
 
     IMU imu;
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
-
     public static double LATERAL_MULTIPLIER = 1.101399867722112;
 
     public static double VX_WEIGHT = 1;
-    public static double VY_WEIGHT = 1.15;
+    public static double VY_WEIGHT = 1;
     public static double ω_WEIGHT = 1;
-
-    public double fLeft;
-    public double fRight;
-    public double bLeft;
-    public double bRight;
-
-    public double odoDrive;
-    public double odoStrafe;
-    public double odoTurn;
-
-    double max;
-
-    double x_rotated;
-    double y_rotated;
-
-    public double trapezoidalTranslationalError = 0;
-
-    static double PID_TranslationalX_kp = 0.3;
-    static double PID_TranslationalY_kp = 0.3;
-    static double PID_Heading_kp = 2.5;
-
-    static double PID_TranslationalX_ki = 0.0015; //0.0075
-    static double PID_TranslationalY_ki = 0.0015;
-    static double PID_Heading_ki = 0.1; //0.05
-
-    // 0.01
-    static double PID_TranslationalX_kd = 0.045;
-    static double PID_TranslationalY_kd = 0.045;
-    static double PID_Heading_kd = 0.03;
-
-    static double PID_TranslationalX_a = 0;
-    static double PID_TranslationalY_a = 0;
-    static double PID_Heading_a = 0.1;
-
-    static double TrapezoidalX_kp = 0;
-    static double TrapezoidalX_kv = 0.0075;
-    static double TrapezoidalX_ka = 0;
-
-    static double TrapezoidalY_kp = 0;
-    static double TrapezoidalY_kv = 0;
-    static double TrapezoidalY_ka = 0;
-
-    double previousFLeft = 0;
-    double previousFRight = 0;
-    double previousBRight = 0;
-    double previousBLeft = 0;
-
-    private static final TrajectoryVelocityConstraint VEL_CONSTRAINT = getVelocityConstraint(BeefCake_DriveConstants.MAX_VEL, BeefCake_DriveConstants.MAX_ANG_VEL, BeefCake_DriveConstants.TRACK_WIDTH);
-    private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(BeefCake_DriveConstants.MAX_ACCEL);
-
-    Vector3D controllerInput = new Vector3D(0, 0, 0);
-
-    public PID_Controller TranslationalPID_X;
-    public PID_Controller TranslationalPID_Y;
-    public PID_Controller HeadingPID;
-
-    public TrapezoidalMotionProfile TranslationalProfile_X;
-    public TrapezoidalMotionProfile TranslationalProfile_Y;
-
-    Vector3D odoPID_Vector = new Vector3D(0, 0, 0);
-
-    public OdometryLocalizer odometry;
-
-    public Vector3D RobotPose;
 
     public Chassis(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
         super("fLeft", "fRight", "bRight", "bLeft",
                 BeefCake_DriveConstants.kV, BeefCake_DriveConstants.kA, BeefCake_DriveConstants.kStatic,
                 BeefCake_DriveConstants.TRACK_WIDTH, BeefCake_DriveConstants.WHEEL_BASE, LATERAL_MULTIPLIER,
-                TRANSLATIONAL_PID, HEADING_PID, VX_WEIGHT, VY_WEIGHT, ω_WEIGHT,
-                VEL_CONSTRAINT, ACCEL_CONSTRAINT, hardwareMap);
+                TRANSLATIONAL_PID, HEADING_PID, VX_WEIGHT, VY_WEIGHT, ω_WEIGHT, hardwareMap);
 
         reset();
 
         // TODO: Tune properly (needs some derivative)
-        TranslationalPID_X = new PID_Controller(PID_TranslationalX_kp, PID_TranslationalX_kd, PID_TranslationalX_a, PID_TranslationalX_ki);//12.5 volts, a = 0
-        TranslationalPID_Y = new PID_Controller(PID_TranslationalY_kp, PID_TranslationalY_kd, PID_TranslationalY_a, PID_TranslationalY_ki);
-        HeadingPID = new PID_Controller(PID_Heading_kp, PID_Heading_kd, PID_Heading_a, PID_Heading_ki);
+        TranslationalPID_X = new PID_Controller(0, 0, 0, 0);//12.5 volts, a = 0
+        TranslationalPID_Y = new PID_Controller(0, 0, 0, 0);
+        HeadingPID = new PID_Controller(0, 0, 0, 0);
 
-        TranslationalProfile_X = new TrapezoidalMotionProfile(BeefCake_DriveConstants.MAX_VEL, BeefCake_DriveConstants.MAX_ACCEL, TrapezoidalX_kp, TrapezoidalX_kv, TrapezoidalX_ka);
-        TranslationalProfile_Y = new TrapezoidalMotionProfile(BeefCake_DriveConstants.MAX_VEL, BeefCake_DriveConstants.MAX_ACCEL, TrapezoidalY_kp, TrapezoidalY_kv, TrapezoidalY_ka);
+        TranslationalProfile_X = new TrapezoidalMotionProfile(BeefCake_DriveConstants.MAX_VEL, BeefCake_DriveConstants.MAX_ACCEL, 0, 0, 0);
+        TranslationalProfile_Y = new TrapezoidalMotionProfile(BeefCake_DriveConstants.MAX_VEL, BeefCake_DriveConstants.MAX_ACCEL, 0, 0, 0);
 
         TranslationalPID_X.tolerance = 0.05;
         TranslationalPID_Y.tolerance = 0.05;
@@ -203,8 +132,8 @@ public class Chassis extends MecanumDriveTrain {
     }
 
     public void ManualDrive(){
-        controllerInput.set(Math.pow(gamepad1.left_stick_y, 3), Math.pow(gamepad1.left_stick_x, 3), Math.pow(gamepad1.right_stick_x, 3));
-//        controllerInput.set(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+//        controllerInput.set(Math.pow(gamepad1.left_stick_y, 3), Math.pow(gamepad1.left_stick_x, 3), Math.pow(gamepad1.right_stick_x, 3));
+        controllerInput.set(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
         setDriveVectorsRobotCentric(controllerInput);
     }
 

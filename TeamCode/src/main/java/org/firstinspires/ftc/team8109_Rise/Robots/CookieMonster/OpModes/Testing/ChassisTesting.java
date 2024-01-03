@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.team8109_Rise.Robots.CookieMonster.Mechanisms.Chassis;
 
-@TeleOp
+//@TeleOp
 public class ChassisTesting extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

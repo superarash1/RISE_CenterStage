@@ -80,9 +80,6 @@ public class Chassis extends MecanumDriveTrain {
     double previousBRight = 0;
     double previousBLeft = 0;
 
-    private static final TrajectoryVelocityConstraint VEL_CONSTRAINT = getVelocityConstraint(SlidesBot_DriveConstants.MAX_VEL, SlidesBot_DriveConstants.MAX_ANG_VEL, SlidesBot_DriveConstants.TRACK_WIDTH);
-    private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(SlidesBot_DriveConstants.MAX_ACCEL);
-
     Vector3D controllerInput = new Vector3D(0, 0, 0);
 
     public PID_Controller TranslationalPID_X;
@@ -102,8 +99,7 @@ public class Chassis extends MecanumDriveTrain {
         super("fLeft", "fRight", "bRight", "bLeft",
                 SlidesBot_DriveConstants.kV, SlidesBot_DriveConstants.kA, SlidesBot_DriveConstants.kStatic,
                 SlidesBot_DriveConstants.TRACK_WIDTH, SlidesBot_DriveConstants.WHEEL_BASE, LATERAL_MULTIPLIER,
-                TRANSLATIONAL_PID, HEADING_PID, VX_WEIGHT, VY_WEIGHT, ω_WEIGHT,
-                VEL_CONSTRAINT, ACCEL_CONSTRAINT, hardwareMap);
+                TRANSLATIONAL_PID, HEADING_PID, VX_WEIGHT, VY_WEIGHT, ω_WEIGHT, hardwareMap);
 
         reset();
 

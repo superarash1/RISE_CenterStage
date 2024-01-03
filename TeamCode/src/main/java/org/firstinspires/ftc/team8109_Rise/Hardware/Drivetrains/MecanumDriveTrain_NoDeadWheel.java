@@ -30,13 +30,15 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.team8109_Rise.Resources.RoadRunnerQuickstart.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.team8109_Rise.Resources.RoadRunnerQuickstart.trajectorysequence.TrajectorySequenceRunner;
+import org.firstinspires.ftc.team8109_Rise.Resources.RoadRunnerQuickstart.trajectorysequence.TrajectorySequenceBuilder;
+
 import org.firstinspires.ftc.team8109_Rise.Hardware.Motor;
 import org.firstinspires.ftc.team8109_Rise.Math.Vectors.Vector3D;
-import org.firstinspires.ftc.team8109_Rise.OldCode.InertialMeasurementUnit;
-import org.firstinspires.ftc.team8109_Rise.Resources.RoadRunnerQuickstart.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.team8109_Rise.Resources.RoadRunnerQuickstart.trajectorysequence.TrajectorySequenceBuilder;
-import org.firstinspires.ftc.team8109_Rise.Resources.RoadRunnerQuickstart.trajectorysequence.TrajectorySequenceRunner;
+
 import org.firstinspires.ftc.team8109_Rise.Resources.RoadRunnerQuickstart.util.LynxModuleUtil;
+import org.firstinspires.ftc.team8109_Rise.Sensors.InertialMeasurementUnit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,6 +79,9 @@ public abstract class MecanumDriveTrain_NoDeadWheel extends MecanumDrive {
     public InertialMeasurementUnit InertialMeasurementUnit;
     private VoltageSensor batteryVoltageSensor;
 
+
+    private List<Integer> lastEncPositions = new ArrayList<>();
+    private List<Integer> lastEncVels = new ArrayList<>();
 
     //TODO: take out all thig of other drive constant files (parameter to input a DriveConstants class object?)
     public MecanumDriveTrain_NoDeadWheel(String flName, String frName, String brName, String blName,
@@ -128,7 +133,14 @@ public abstract class MecanumDriveTrain_NoDeadWheel extends MecanumDrive {
         // TODO: if desired, use setLocalizer() to change the localization method
 //        setLocalizer(new OdometryLocalizer(hardwareMap));
 
-        trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
+
+        List<Integer> lastTrackingEncPositions = new ArrayList<>();
+        List<Integer> lastTrackingEncVels = new ArrayList<>();
+
+        trajectorySequenceRunner = new TrajectorySequenceRunner(
+                follower, HEADING_PID, batteryVoltageSensor,
+                lastEncPositions, lastEncVels, lastTrackingEncPositions, lastTrackingEncVels
+        );
 
         this.VEL_CONSTRAINT = VEL_CONSTRAINT;
         this.ACCEL_CONSTRAINT = ACCEL_CONSTRAINT;

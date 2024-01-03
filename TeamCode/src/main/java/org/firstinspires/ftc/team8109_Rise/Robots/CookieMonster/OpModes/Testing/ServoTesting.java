@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.team8109_Rise.Robots.CookieMonster.Mechanisms.Arm;
 
-@TeleOp
+//@TeleOp
 public class ServoTesting extends LinearOpMode {
 
     boolean toggle1 = true;

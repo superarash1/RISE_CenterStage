@@ -30,13 +30,18 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.team8109_Rise.Control.MotionProfiling.TrapezoidalMotionProfile;
+import org.firstinspires.ftc.team8109_Rise.Control.PID_Controller;
+import org.firstinspires.ftc.team8109_Rise.Resources.RoadRunnerQuickstart.trajectorysequence.TrajectorySequenceRunner;
+import org.firstinspires.ftc.team8109_Rise.Resources.RoadRunnerQuickstart.trajectorysequence.TrajectorySequenceBuilder;
+
 import org.firstinspires.ftc.team8109_Rise.Hardware.Motor;
 import org.firstinspires.ftc.team8109_Rise.Math.Vectors.Vector3D;
-import org.firstinspires.ftc.team8109_Rise.OldCode.InertialMeasurementUnit;
-import org.firstinspires.ftc.team8109_Rise.Resources.RoadRunnerQuickstart.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.team8109_Rise.Resources.RoadRunnerQuickstart.trajectorysequence.TrajectorySequenceBuilder;
-import org.firstinspires.ftc.team8109_Rise.Resources.RoadRunnerQuickstart.trajectorysequence.TrajectorySequenceRunner;
+
 import org.firstinspires.ftc.team8109_Rise.Resources.RoadRunnerQuickstart.util.LynxModuleUtil;
+import org.firstinspires.ftc.team8109_Rise.Robots.BeefCake.Sensors.BeefCake_DriveConstants;
+import org.firstinspires.ftc.team8109_Rise.Robots.BeefCake.Sensors.Odometry.OdometryLocalizer;
+import org.firstinspires.ftc.team8109_Rise.Sensors.InertialMeasurementUnit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,18 +70,61 @@ public abstract class MecanumDriveTrain extends MecanumDrive {
     double VY_WEIGHT;
     double OMEGA_WEIGHT;
 
-    private TrajectorySequenceRunner trajectorySequenceRunner;
+    public double fLeft;
+    public double fRight;
+    public double bLeft;
+    public double bRight;
 
-    private TrajectoryVelocityConstraint VEL_CONSTRAINT;
-    private TrajectoryAccelerationConstraint ACCEL_CONSTRAINT;
+    public double odoDrive;
+    public double odoStrafe;
+    public double odoTurn;
+
+    public double max;
+
+    public double x_rotated;
+    public double y_rotated;
+
+
+    public double previousFLeft = 0;
+    public double previousFRight = 0;
+    public double previousBRight = 0;
+    public double previousBLeft = 0;
+
+    private static final TrajectoryVelocityConstraint VEL_CONSTRAINT = getVelocityConstraint(BeefCake_DriveConstants.MAX_VEL, BeefCake_DriveConstants.MAX_ANG_VEL, BeefCake_DriveConstants.TRACK_WIDTH);
+    private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(BeefCake_DriveConstants.MAX_ACCEL);
+
+    public Vector3D controllerInput = new Vector3D(0, 0, 0);
+
+    public PID_Controller TranslationalPID_X;
+    public PID_Controller TranslationalPID_Y;
+    public PID_Controller HeadingPID;
+
+    public TrapezoidalMotionProfile TranslationalProfile_X;
+    public TrapezoidalMotionProfile TranslationalProfile_Y;
+
+    public double trapezoidalTranslationalError = 0;
+
+    public Vector3D odoPID_Vector = new Vector3D(0, 0, 0);
+
+    public OdometryLocalizer odometry;
+
+    public Vector3D RobotPose;
+
+    private final TrajectorySequenceRunner trajectorySequenceRunner;
 
     private TrajectoryFollower follower;
 
     private List<Motor> motors;
 
+
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+
     public InertialMeasurementUnit InertialMeasurementUnit;
     private VoltageSensor batteryVoltageSensor;
 
+    private List<Integer> lastEncPositions = new ArrayList<>();
+    private List<Integer> lastEncVels = new ArrayList<>();
 
     //TODO: take out all thig of other drive constant files (parameter to input a DriveConstants class object?)
     public MecanumDriveTrain(String flName, String frName, String brName, String blName,
@@ -84,7 +132,6 @@ public abstract class MecanumDriveTrain extends MecanumDrive {
                              double TRACK_WIDTH, double WHEEL_BASE, double LATERAL_MULTIPLIER,
                              PIDCoefficients TRANSLATIONAL_PID, PIDCoefficients HEADING_PID,
                              double VX_WEIGHT, double VY_WEIGHT, double OMEGA_WEIGHT,
-                             TrajectoryVelocityConstraint VEL_CONSTRAINT, TrajectoryAccelerationConstraint ACCEL_CONSTRAINT,
                              HardwareMap hardwareMap) {
 
         //TODO: Make it different files
@@ -128,10 +175,14 @@ public abstract class MecanumDriveTrain extends MecanumDrive {
         // TODO: if desired, use setLocalizer() to change the localization method
 //        setLocalizer(new OdometryLocalizer(hardwareMap));
 
-        trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
 
-        this.VEL_CONSTRAINT = VEL_CONSTRAINT;
-        this.ACCEL_CONSTRAINT = ACCEL_CONSTRAINT;
+        List<Integer> lastTrackingEncPositions = new ArrayList<>();
+        List<Integer> lastTrackingEncVels = new ArrayList<>();
+
+        trajectorySequenceRunner = new TrajectorySequenceRunner(
+                follower, HEADING_PID, batteryVoltageSensor,
+                lastEncPositions, lastEncVels, lastTrackingEncPositions, lastTrackingEncVels
+        );
 
         this.VX_WEIGHT = VX_WEIGHT;
         this.VY_WEIGHT = VY_WEIGHT;
@@ -187,46 +238,10 @@ public abstract class MecanumDriveTrain extends MecanumDrive {
 //        return poseEstimate;
 //    }
 
-    public void turn(double angle) {
-        turnAsync(angle);
-        waitForIdle();
-    }
-
-    public void followTrajectoryAsync(Trajectory trajectory) {
-        trajectorySequenceRunner.followTrajectorySequenceAsync(
-                trajectorySequenceBuilder(trajectory.start())
-                        .addTrajectory(trajectory)
-                        .build()
-        );
-    }
-
-    public void followTrajectory(Trajectory trajectory) {
-        followTrajectoryAsync(trajectory);
-        waitForIdle();
-    }
-
-    public void followTrajectorySequenceAsync(TrajectorySequence trajectorySequence) {
-        trajectorySequenceRunner.followTrajectorySequenceAsync(trajectorySequence);
-    }
-
-    public void followTrajectorySequence(TrajectorySequence trajectorySequence) {
-        followTrajectorySequenceAsync(trajectorySequence);
-        waitForIdle();
-    }
-
-    public Pose2d getLastError() {
-        return trajectorySequenceRunner.getLastPoseError();
-    }
-
     public void update() {
         updatePoseEstimate();
         DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
         if (signal != null) setDriveSignal(signal);
-    }
-
-    public void waitForIdle() {
-        while (!Thread.currentThread().isInterrupted() && isBusy())
-            update();
     }
 
     public boolean isBusy() {

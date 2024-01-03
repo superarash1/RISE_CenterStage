@@ -1,20 +1,23 @@
-package org.firstinspires.ftc.team8109_Rise.Robots.SlidesBot.OpModes.Testing;
+package org.firstinspires.ftc.team8109_Rise.Robots.BeefCake.OpModes.Testing;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.team8109_Rise.Robots.SlidesBot.Mechanisms.ServoIntakeArm;
+import org.firstinspires.ftc.team8109_Rise.Robots.BeefCake.Mechanisms.ClawLeft;
+import org.firstinspires.ftc.team8109_Rise.Robots.BeefCake.Mechanisms.ClawRight;
 
-//@TeleOp
+@TeleOp
 public class ServoTest extends LinearOpMode {
-    @Override
+
     public void runOpMode() throws InterruptedException {
-        ServoIntakeArm arm = new ServoIntakeArm(gamepad1, telemetry, hardwareMap);
-//        Servo armServo1 = hardwareMap.get(Servo.class, "armRight");
+
+        //        Servo armServo1 = hardwareMap.get(Servo.class, "armRight");
 //        Servo armServo2 = hardwareMap.get(Servo.class, "armRight");
-//        Claw claw = new Claw(gamepad1, telemetry, hardwareMap);
+        ClawLeft clawLeft = new ClawLeft(gamepad1, telemetry, hardwareMap);
+        ClawRight clawRight = new ClawRight(gamepad1, telemetry, hardwareMap);
 //        Wrist wrist = new Wrist(gamepad1, hardwareMap);
 
 //        OdoRetract retract = new OdoRetract(gamepad1, hardwareMap);
@@ -28,20 +31,23 @@ public class ServoTest extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            arm.togglePosition();
-//            arm.setAngleIndividual();
-            arm.setTelemetry();
+
             telemetry.update();
 //            retract.toggleState();
 //            retract.setPodPosition();
 //            wrist.setPosition();
 
 //            claw.toggleClaw();
-//            claw.setPosition();
-//            claw.setTelemetry();
+//            clawLeft.setPosition();
+//            clawRight.setPosition();
+
+            clawLeft.toggleClaw();
+            clawRight.toggleClaw();
+
+            //            claw.setTelemetry();
 
 
-            //TODO: revermosempm
+            //TODO: rever                                              mosempm
 
 //            telemetry.addData("leftServoPos", armServo1.getPosition());
 ////            telemetry.addData("rightServoPos", armServo2.getPosition());

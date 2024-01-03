@@ -2,7 +2,6 @@ package org.firstinspires.ftc.team8109_Rise.Robots.SlidesBot.OpModes.RoadRunnerT
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.Angle;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -10,7 +9,7 @@ import org.firstinspires.ftc.team8109_Rise.Resources.RoadRunnerQuickstart.drive.
 import org.firstinspires.ftc.team8109_Rise.Robots.SlidesBot.Mechanisms.Chassis;
 import org.firstinspires.ftc.team8109_Rise.Sensors.Odometry.StandardThreeWheelOdoLocalizer;
 
-@Autonomous
+//@Autonomous
 public class TrackingWheelLateralDistanceTunerOpMode extends LinearOpMode {
     public static int NUM_TURNS = 10;
 

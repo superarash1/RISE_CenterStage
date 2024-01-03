@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.MovingStatistics;
 
 import org.firstinspires.ftc.robotcore.internal.system.Misc;
-import org.firstinspires.ftc.team8109_Rise.OldCode.Hardware.DriveConstants;
 import org.firstinspires.ftc.team8109_Rise.Robots.SlidesBot.Mechanisms.Chassis;
+import org.firstinspires.ftc.team8109_Rise.Robots.SlidesBot.Sensors.SlidesBot_DriveConstants;
 
 @Config
 @Autonomous(group = "drive")
@@ -60,7 +60,7 @@ public class TrackWidthTunerOpMode extends LinearOpMode {
                 drive.update();
             }
 
-            double trackWidth = DriveConstants.TRACK_WIDTH * Math.toRadians(ANGLE) / headingAccumulator;
+            double trackWidth = SlidesBot_DriveConstants.TRACK_WIDTH * Math.toRadians(ANGLE) / headingAccumulator;
             trackWidthStats.add(trackWidth);
 
             sleep(DELAY);
