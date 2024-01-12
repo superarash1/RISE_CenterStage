@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.team8109_Rise.Control.PID_Controller;
 import org.firstinspires.ftc.team8109_Rise.Hardware.Lifts.Slides;
 
-public class ViperSlides extends Slides {
+public class BeefySlides extends Slides {
 
     Gamepad gamepad1;
     Telemetry telemetry;
@@ -40,7 +40,7 @@ public class ViperSlides extends Slides {
 
     public double targetPos = 0;
 
-    public ViperSlides(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap) {
+    public BeefySlides(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap) {
         super(2, name, pulleyRadius, StringingMethod.CONTINUOUS, 2, 0, hardwareMap); //0.175
 
         slidesPID = new PID_Controller(0, 0, 0, 0); //0.07, 0.0035, 0, 0.01
@@ -66,17 +66,22 @@ public class ViperSlides extends Slides {
         /* PID controller calculates the power needed to be set to the motors to stay at the target position  */
         slidesPower = slidesPID.PID_Power(getHeight(), targetPos);
         slidesPID.tolerance = 0.001;
+
+        bicep.bicepStates();
         switch (slidesState){
             case HOME:
                 targetPos = 0;
+                bicep.bicepState = Bicep.BicepStates.HOME;
                 break;
 
             case FIRST_LINE:
                 targetPos = 6;
+                bicep.bicepState = Bicep.BicepStates.FIRST_LINE;
                 break;
 
             case THIRD_LINE:
                 targetPos = 13;
+                bicep.bicepState = Bicep.BicepStates.THIRD_LINE;
                 break;
 
             case MANUAL:
@@ -87,6 +92,8 @@ public class ViperSlides extends Slides {
                 } else {
                     slidesPower = 0;
                 }
+
+                bicep.bicepState = Bicep.BicepStates.MANUAL;
                 break;
         }
         // Sets the power to the slides motors
