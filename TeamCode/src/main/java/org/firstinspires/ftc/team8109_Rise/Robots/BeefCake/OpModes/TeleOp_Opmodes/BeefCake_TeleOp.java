@@ -19,6 +19,9 @@ public class BeefCake_TeleOp extends LinearOpMode {
         sausageFingers = new SausageFingers(gamepad1, telemetry, hardwareMap);
 
         while (opModeInInit()){
+            beefySlides.setSlidePower();
+            sausageFingers.setClawOpen();
+
             telemetry.addLine("Waiting For Start");
             telemetry.update();
         }
