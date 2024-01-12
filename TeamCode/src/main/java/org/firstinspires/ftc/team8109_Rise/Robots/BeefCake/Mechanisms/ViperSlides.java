@@ -41,7 +41,7 @@ public class ViperSlides extends Slides {
     public ViperSlides(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap) {
         super(2, name, pulleyRadius, StringingMethod.CONTINUOUS, 2, 0, hardwareMap); //0.175
 
-        slidesPID = new PID_Controller(0.31, 0.03, 0, 0.01); //0.07, 0.0035, 0, 0.01
+        slidesPID = new PID_Controller(0, 0, 0, 0); //0.07, 0.0035, 0, 0.01
 
         motors[0].reset();
         motors[1].reset();
@@ -68,11 +68,11 @@ public class ViperSlides extends Slides {
                 break;
 
             case FIRST_LINE:
-                targetPos = 18.4;
+                targetPos = 6;
                 break;
 
             case THIRD_LINE:
-                targetPos = 10.27;
+                targetPos = 13;
                 break;
 
             case MANUAL:

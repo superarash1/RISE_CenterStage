@@ -48,8 +48,8 @@ public abstract class ServoArm {
         }
 
         if (unit == AngleUnit.RADIANS) {
-            armServo1.setPosition(angle/((3*Math.PI)/2));
-            armServo2.setPosition(angle/((3*Math.PI)/2));
+            armServo1.setPosition(angle/((5*Math.PI)/3));
+            armServo2.setPosition(angle/((5*Math.PI)/3));
         }
     }
 
