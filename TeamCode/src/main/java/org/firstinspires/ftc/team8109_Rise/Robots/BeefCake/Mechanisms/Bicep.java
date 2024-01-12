@@ -7,7 +7,6 @@ import org.firstinspires.ftc.team8109_Rise.Hardware.Arms.ServoArm;
 
 public class Bicep extends ServoArm {
 
-    Gamepad gamepad1;
 
     enum BicepStates{
         HOME,
@@ -17,10 +16,9 @@ public class Bicep extends ServoArm {
     }
 
     BicepStates bicepState;
-    public Bicep(String[] name, Gamepad gamepad1, HardwareMap hardwareMap) {
+    public Bicep(String[] name, HardwareMap hardwareMap) {
         super(ServoArmType.DOUBLE_SERVO, name, hardwareMap);
 
-        this.gamepad1 = gamepad1;
         bicepState = BicepStates.HOME;
     }
 
@@ -42,5 +40,4 @@ public class Bicep extends ServoArm {
                 break;
         }
     }
-
 }

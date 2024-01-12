@@ -18,6 +18,8 @@ public class ViperSlides extends Slides {
 
     double slidesPower = 0;
 
+    Bicep bicep;
+
     public enum SlidesState{
         HOME,
         FIRST_LINE,
@@ -48,6 +50,8 @@ public class ViperSlides extends Slides {
 
         // One of the motors needs to be reversed since the motors face opposite directions
         motors[0].setDirectionReverse();
+
+        bicep = new Bicep(new String[]{"armLeft", "armRight"}, hardwareMap);
 
         // Need to use the instances of gamepad1 and telemetry from the class LinearOpmode because that's what the code runs
         this.gamepad1 = gamepad1;
