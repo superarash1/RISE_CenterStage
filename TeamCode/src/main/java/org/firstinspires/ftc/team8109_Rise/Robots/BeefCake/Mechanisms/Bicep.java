@@ -8,14 +8,14 @@ import org.firstinspires.ftc.team8109_Rise.Hardware.Arms.ServoArm;
 public class Bicep extends ServoArm {
 
 
-    enum BicepStates{
+    public enum BicepStates{
         HOME,
         FIRST_LINE,
         THIRD_LINE,
         MANUAL
     }
 
-    BicepStates bicepState;
+    public BicepStates bicepState;
     public Bicep(String[] name, HardwareMap hardwareMap) {
         super(ServoArmType.DOUBLE_SERVO, name, hardwareMap);
 

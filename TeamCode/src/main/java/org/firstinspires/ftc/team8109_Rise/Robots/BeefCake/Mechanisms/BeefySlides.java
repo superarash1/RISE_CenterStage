@@ -13,6 +13,7 @@ public class BeefySlides extends Slides {
     Telemetry telemetry;
 
     static String[] name = {"slidesLeft", "slidesRight"};
+    static String[] armName = {"armLeft", "armRight"};
 
     static double pulleyRadius = 0.752;
 
@@ -51,7 +52,7 @@ public class BeefySlides extends Slides {
         // One of the motors needs to be reversed since the motors face opposite directions
         motors[0].setDirectionReverse();
 
-        bicep = new Bicep(new String[]{"armLeft", "armRight"}, hardwareMap);
+        bicep = new Bicep(armName, hardwareMap);
 
         // Need to use the instances of gamepad1 and telemetry from the class LinearOpmode because that's what the code runs
         this.gamepad1 = gamepad1;

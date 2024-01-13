@@ -167,22 +167,6 @@ public class Actual_CycleAutonPID_StrafeStart extends LinearOpMode {
             arm.setArmPosition();
             wrist.setPosition();
 
-//            if (pipeline.findColor() == ColorPipeline.Colors.BLUE){
-//                parkingZone = ParkingZone.LEFT;
-//            }
-//
-//            if (pipeline.findColor() == ColorPipeline.Colors.RED){
-//                parkingZone = ParkingZone.RIGHT;
-//            }
-//
-//            if (pipeline.findColor() == ColorPipeline.Colors.GREEN){
-//                parkingZone = ParkingZone.MIDDLE;
-//            }
-//
-//            if (pipeline.findColor() == ColorPipeline.Colors.UNKNOWN){
-//                parkingZone = ParkingZone.MIDDLE;
-//            }
-
             parkingZone = ParkingZone.LEFT;
 
             telemetry.addData("color", pipeline.findColor());
@@ -240,43 +224,12 @@ public class Actual_CycleAutonPID_StrafeStart extends LinearOpMode {
                 if (withinPoseTolerance()){
                     autonState = AutonState.GO_TO_SCORE_PRELOAD;
 
-//                    chassis.TranslationalPID_X.setPIDCoefficents(0.1, 0.01, 0, 0.002);//0.03 0.001
-//                    chassis.TranslationalPID_Y.setPIDCoefficents(0.1, 0.01, 0, 0.002);
-//                    chassis.HeadingPID.setPIDCoefficents(2, 0.02, 0, 0); // 0.03 0.1 0.001
-
                     chassis.TranslationalPID_X.setPIDCoefficients(0.35, 0.0375, 0, 0.0025);//0.03 0.001
                     chassis.TranslationalPID_Y.setPIDCoefficients(0.4, 0.0375, 0, 0.01);
                     chassis.HeadingPID.setPIDCoefficients(2, 0.02, 0, 0.001);
                     runtime.reset();
-
-                    // TODO: Y negative left
-
-//                    if (runtime.seconds() > 0.5){
-//                        autonState = AutonState.RETURN_TO_POLE;
-//                        runtime.reset();
-//                    }
                 }
                 break;
-            case RETURN_TO_POLE:
-//                slides.slidesState = ViperSlides.SlidesState.HIGH_JUNCTION;
-//
-//                arm.servoPosition = ServoIntakeArm.ServoPosition.OUTTAKE_POSITION;
-//                wrist.wristPosition = Wrist.WristPosition.OUTTAKE_POSITION;
-//                slides.slidesState = ViperSlides.SlidesState.HIGH_JUNCTION;
-
-                // Cone push to left
-//               ///////////////////////////////////////////////////////////
-//                targetPose.set(49.528, 0.833, -0.42);
-//                chassis.goToPosePID(targetPose);
-//
-//                if (withinPoseTolerance()){
-//                    autonState = AutonState.GO_TO_SCORE_PRELOAD;
-//                    chassis.TranslationalPID_X.setPIDCoefficents(0.35, 0.0375, 0, 0.0025);//0.03 0.001
-//                    chassis.TranslationalPID_Y.setPIDCoefficents(0.4, 0.0375, 0, 0.01);
-//                    chassis.HeadingPID.setPIDCoefficents(2, 0.02, 0, 0.001); // 0.03 0.1 0.001
-//                    runtime.reset();
-//                }
-//                break;
             case GO_TO_SCORE_PRELOAD:
                 translationalTolerance = 0.2;
                 slides.slidesState = ViperSlides.SlidesState.HIGH_JUNCTION;
@@ -303,8 +256,7 @@ public class Actual_CycleAutonPID_StrafeStart extends LinearOpMode {
 
                 if (runtime.seconds() > 0.25){
                     slides.slidesState = ViperSlides.SlidesState.HIGH_DUNK;
-//                    arm.servoPosition = ServoIntakeArm.ServoPosition.DUNK_POSITION;
-                    //Math.abs(slides.slidesPID.error) < slides.slidesPID.tolerance
+
                     autonState = AutonState.SCORE_PRELOAD;
                     claw.clawState = ServoClaw.ClawState.OPEN;
                     runtime.reset();
