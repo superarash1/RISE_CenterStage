@@ -142,6 +142,7 @@ public class ACTUAL_AUTON extends LinearOpMode {
 
         arm.servoPosition = ServoIntakeArm.ServoPosition.AUTO_START;
         claw.clawState = ServoClaw.ClawState.CLOSED;
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         pipeline = new ColorPipeline(telemetry);

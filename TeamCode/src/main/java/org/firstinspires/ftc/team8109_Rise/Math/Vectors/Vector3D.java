@@ -5,6 +5,7 @@ public class Vector3D {
 
     public double A, B, C;
 
+    public double t;
     public Vector3D(double A, double B, double C){
         this.A = A;
         this.B = B;

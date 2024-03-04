@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.team8109_Rise.Control.Filters;
+package org.firstinspires.ftc.team8109_Rise.Resources;
 
 import org.firstinspires.ftc.team8109_Rise.Math.LinearRegression;
 import org.firstinspires.ftc.team8109_Rise.Math.SizedStack;

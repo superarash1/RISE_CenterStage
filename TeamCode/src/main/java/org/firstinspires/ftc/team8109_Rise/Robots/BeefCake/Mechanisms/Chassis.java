@@ -15,7 +15,6 @@ import org.firstinspires.ftc.team8109_Rise.Robots.BeefCake.Sensors.BeefCake_Driv
 public class Chassis extends MecanumDriveTrain {
     Gamepad gamepad1;
     Telemetry telemetry;
-
     IMU imu;
 
     public static double LATERAL_MULTIPLIER = 1.101399867722112;
@@ -23,6 +22,8 @@ public class Chassis extends MecanumDriveTrain {
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double ω_WEIGHT = 1;
+
+    public TrapezoidalMotionProfile velocityController;
 
     public Chassis(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
         super("fLeft", "fRight", "bRight", "bLeft",
@@ -36,6 +37,8 @@ public class Chassis extends MecanumDriveTrain {
         TranslationalPID_X = new PID_Controller(0, 0, 0, 0);//12.5 volts, a = 0
         TranslationalPID_Y = new PID_Controller(0, 0, 0, 0);
         HeadingPID = new PID_Controller(0, 0, 0, 0);
+
+        velocityController = new TrapezoidalMotionProfile(BeefCake_DriveConstants.MAX_VEL, BeefCake_DriveConstants.MAX_ACCEL, 0, 0, 0);
 
         TranslationalProfile_X = new TrapezoidalMotionProfile(BeefCake_DriveConstants.MAX_VEL, BeefCake_DriveConstants.MAX_ACCEL, 0, 0, 0);
         TranslationalProfile_Y = new TrapezoidalMotionProfile(BeefCake_DriveConstants.MAX_VEL, BeefCake_DriveConstants.MAX_ACCEL, 0, 0, 0);
@@ -118,6 +121,34 @@ public class Chassis extends MecanumDriveTrain {
         odoPID_Vector.set(odoDrive, odoStrafe, odoTurn);
 
         setDriveVectorsFieldCentric(odoPID_Vector);
+    }
+
+    // time dependent vector valued function and make some kinda object to store a function so we can pass it in as a parameter
+    public void vectorValuedFunction(double t){
+        //define these in actual auton class?
+        //potentially write up a code that can automatically calculate the derivative
+        Vector3D velocity = new Vector3D(0,0,0);
+        velocity.A = 3*t;
+        velocity.B = 7-t*t;
+        velocity.C = Math.sin(t);
+    }
+
+    public double calculateArcLength(Vector3D velocity){
+        return 0;
+    }
+
+    // All parameters in this method are vector valued functions (potentially bake parametric equations into the vector class Vector3D.t global  variable for instance)
+    public void followParametricEquation(Vector3D velocity, Vector3D idealPosition, double currentArcLength, double totalArcLength){
+        double speed = velocityController.getProfilePower(currentArcLength, totalArcLength);
+        Vector3D velocityNormalized = velocity.normalize();
+        Vector3D idealOutput = velocityNormalized.scale(speed);
+
+        // fix up field centric code to remove negative signs/check if motor directions are correct (using robot centric signs to check if they're correct)
+        double correction_X = -TranslationalPID_X.PID_Power(getPoseEstimate().getX(), idealPosition.A);
+        double correction_Y = -TranslationalPID_Y.PID_Power(getPoseEstimate().getY(), idealPosition.B);
+        double correction_Heading = -HeadingPID.PID_Power(angleWrap(getPoseEstimate().getHeading()), idealPosition.C);
+        Vector3D adjustedOutput = idealOutput.add(new Vector3D(correction_X, correction_Y, correction_Heading));
+        setDriveVectorsRobotCentric(adjustedOutput);
     }
 
     public void goToPoseTrapezoidal(Vector3D input){

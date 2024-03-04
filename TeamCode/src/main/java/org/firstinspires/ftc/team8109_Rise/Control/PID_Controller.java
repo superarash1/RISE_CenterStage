@@ -60,10 +60,7 @@ public class PID_Controller {
 
         area += ((error+previousError)*deltaTime)/2;
 
-        if (Math.abs(error) < tolerance){
-            area = 0;
-        }
-
+        if (Math.abs(error) < tolerance) area = 0;
         if (targetPos != previousTarget) area = 0;
 
         I = area*ki;
@@ -90,11 +87,11 @@ public class PID_Controller {
         deltaTime = runtime.seconds();
         runtime.reset();
 
+        D = kd * (errorChange / deltaTime);
+
         area += error*deltaTime;
 
         I = area*ki;
-
-        D = kd * (errorChange / deltaTime);
 
         previousError = error;
         previousFilterEstimate = currentFilterEstimate;

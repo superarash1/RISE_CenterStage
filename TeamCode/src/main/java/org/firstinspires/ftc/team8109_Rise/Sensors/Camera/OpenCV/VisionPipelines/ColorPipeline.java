@@ -3,6 +3,7 @@ package org.firstinspires.ftc.team8109_Rise.Sensors.Camera.OpenCV.VisionPipeline
 
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.vision.VisionPortal;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -35,6 +36,10 @@ public class ColorPipeline extends OpenCvPipeline {
 
     public ColorPipeline (Telemetry telemetry){
         this.telemetry = telemetry;
+    }
+
+    public void init(){
+
     }
     public int[] channelsOfInterest = new int[3];
 

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.team8109_Rise.Sensors.Camera.OpenCV.VisionPipelines.ConfigurablePipelines;
+package org.firstinspires.ftc.team8109_Rise.Sensors.Camera.OpenCV.VisionPipelines.EasyOpenCV_Pipelines;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Core;

@@ -7,6 +7,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.team8109_Rise.Control.PID_Controller;
 import org.firstinspires.ftc.team8109_Rise.Hardware.Lifts.Slides;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.BasicOmniOpMode_Linear;
+
 public class BeefySlides extends Slides {
 
     Gamepad gamepad1;
