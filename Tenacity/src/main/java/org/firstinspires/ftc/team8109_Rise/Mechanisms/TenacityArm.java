@@ -3,6 +3,7 @@ package org.firstinspires.ftc.team8109_Rise.Mechanisms;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
 import org.firstinspires.ftc.robotcontroller.Control.PID_Controller;
 import org.firstinspires.ftc.robotcontroller.Hardware.Arms.MotorArm;
@@ -39,14 +40,12 @@ public class TenacityArm extends MotorArm {
 
     public ArmState armState;
 
-    public static double arm_kp = 0.045; //0.01
-    public static double arm_kd = 0;
-    public static double arm_a = 0;
-    public static double arm_ki = 0;
 
-    public static double angle = -15;
+    public static PIDCoefficients PID_COEFFS = new PIDCoefficients(0.04, 0.0025, 0.003);
+    public static double ANGLE = -11;
+    public static double K_GRAVITY = 0.022;
 
-    Slides slides;
+    public Slides slides;
     public TenacityArm(Slides slides, Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap) {
         super(2, names, 28, 0.0091, 0.1, 45, hardwareMap);
 
@@ -54,7 +53,9 @@ public class TenacityArm extends MotorArm {
 //        motors[1].setDirectionReverse();
 
         //0.0001
-        ArmPID = new PID_Controller(arm_kp, arm_kd, arm_a, arm_ki);
+        ArmPID = new PID_Controller(PID_COEFFS, 0);
+
+        ArmPID.tolerance = 0.75;
 
         targetAngle = 45;
 
@@ -73,21 +74,21 @@ public class TenacityArm extends MotorArm {
                 targetAngle = 34;
                 break;
             case CLOSE_INTAKE:
-                targetAngle = angle;
+                targetAngle = ANGLE;
                 break;
             case FAR_INTAKE:
                 targetAngle = -12;
                 break;
             case FIRST_LINE:
-                targetAngle = 142;
+                targetAngle = 152;
                 break;
 
             case SECOND_LINE:
-                targetAngle = 123;
+                targetAngle = 133;
                 break;
 
             case THIRD_LINE:
-                targetAngle = 110;
+                targetAngle = 130;
                 break;
 
             case MANUAL:
@@ -106,13 +107,16 @@ public class TenacityArm extends MotorArm {
     @Override
     public double getAngleDegrees() {
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-
-        return angles.thirdAngle;
+        if (Math.abs(angles.thirdAngle) > 90 && angles.thirdAngle < 0){
+            return 360 + angles.thirdAngle;
+        } else{
+            return angles.thirdAngle;
+        }
     }
 
     public void setPower(double power){
         //TODO: check if gravity is exactly directly proportional with Cos(angle)
-        antiGravity = kGravity*Math.cos(Math.toRadians(getAngleDegrees()))*(slides.getExtension()+8);
+        antiGravity = K_GRAVITY*Math.cos(Math.toRadians(getAngleDegrees())); //*(slides.getExtension()+8);
 
         double totalPower = antiGravity + power;
         for (Motor motor : motors){

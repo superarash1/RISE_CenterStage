@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.team8109_Rise.OpModes.Testing;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.team8109_Rise.Mechanisms.TenacityArm;
 import org.firstinspires.ftc.team8109_Rise.Mechanisms.TenacitySlides;
 import org.firstinspires.ftc.team8109_Rise.Mechanisms.TenacityWrist;
@@ -31,14 +33,21 @@ public class ArmTesting extends LinearOpMode {
     boolean lastToggleDown = false;
     boolean lastToggleB = false;
 
+    Telemetry dashboardTelemetry;
+
     @Override
     public void runOpMode() throws InterruptedException {
-        slides = new TenacitySlides(gamepad1, telemetry, hardwareMap);
-        arm = new TenacityArm(slides, gamepad1, telemetry, hardwareMap);
+        dashboardTelemetry = FtcDashboard.getInstance().getTelemetry();
+
+        slides = new TenacitySlides(arm, gamepad1, telemetry, hardwareMap);
+        arm = new TenacityArm(slides, gamepad1, dashboardTelemetry, hardwareMap);
         wrist = new TenacityWrist(gamepad1, telemetry, hardwareMap);
 
         teleOpState = TeleOpState.HOME;
         scoringState = TeleOpState.FIRST_LINE;
+
+        slides.arm = arm;
+        arm.slides = slides;
 
         while (opModeInInit()){
 //            arm.setArmPower();
@@ -50,6 +59,7 @@ public class ArmTesting extends LinearOpMode {
         while (opModeIsActive()){
             arm.setArmPower();
             wrist.setWristPosition();
+            slides.setSlidePower();
 
             switch (teleOpState){
                 case HOME:
@@ -133,11 +143,12 @@ public class ArmTesting extends LinearOpMode {
             lastToggleDown = gamepad1.dpad_down;
             lastToggleB = gamepad1.b;
 
-            arm.TuningTelemetry();
+            slides.TuningTelemetry();
 
             slides.getExtension();
 
             telemetry.update();
+            dashboardTelemetry.update();
         }
     }
 }

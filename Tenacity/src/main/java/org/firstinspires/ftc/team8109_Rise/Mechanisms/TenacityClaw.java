@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.team8109_Rise.Mechanisms;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcontroller.Hardware.Intakes.ServoClaw;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+@Config
 public class TenacityClaw {
     public ClawLeft clawLeft;
     public ClawRight clawRight;
@@ -14,6 +16,11 @@ public class TenacityClaw {
         OPEN,
         CLOSED
     }
+
+    public static double clawLeftOpen = 0.4;
+    public static double clawRightOpen = 0.45;
+    public static double clawLeftClosed = 0.9;
+    public static double clawRightClosed = 0;
     public ClawState clawState;
     Gamepad gamepad1;
     boolean lastToggleY = false;
@@ -30,20 +37,22 @@ public class TenacityClaw {
     }
 
     public void toggleClaw(){
-        clawLeft.setPosition();
-        clawRight.setPosition();
+//        clawLeft.setPosition();
+//        clawRight.setPosition();
 
         switch (clawState){
             case OPEN:
+                clawLeft.clawServo.setPosition(clawLeftOpen);
+                clawRight.clawServo.setPosition(clawRightOpen);
                 if ((gamepad1.y != lastToggleY) && gamepad1.y){
-                    clawLeft.clawState = ServoClaw.ClawState.CLOSED;
-                    clawRight.clawState = ServoClaw.ClawState.CLOSED;
+                    clawState = ClawState.CLOSED;
                 }
                 break;
             case CLOSED:
+                clawLeft.clawServo.setPosition(clawLeftClosed);
+                clawRight.clawServo.setPosition(clawRightClosed);
                 if ((gamepad1.y != lastToggleY) && gamepad1.y){
-                    clawLeft.clawState = ServoClaw.ClawState.OPEN;
-                    clawRight.clawState = ServoClaw.ClawState.OPEN;
+                    clawState = ClawState.OPEN;
                 }
                 break;
         }
@@ -51,17 +60,17 @@ public class TenacityClaw {
     }
 
     public void toggleLeftClaw(){
-        clawLeft.setPosition();
+//        clawLeft.setPosition();
 
         switch (clawState){
             case OPEN:
                 if ((gamepad1.left_bumper != lastToggleLeftBumper) && gamepad1.left_bumper){
-                    clawLeft.clawState = ServoClaw.ClawState.CLOSED;
+                    clawLeft.clawServo.setPosition(clawLeftOpen);
                 }
                 break;
             case CLOSED:
                 if ((gamepad1.left_bumper != lastToggleLeftBumper) && gamepad1.left_bumper){
-                    clawLeft.clawState = ServoClaw.ClawState.OPEN;
+                    clawLeft.clawServo.setPosition(clawLeftClosed);
                 }
                 break;
         }
@@ -69,17 +78,17 @@ public class TenacityClaw {
     }
 
     public void toggleRightClaw(){
-        clawRight.setPosition();
+//        clawRight.setPosition();
 
         switch (clawState){
             case OPEN:
                 if ((gamepad1.right_bumper != lastToggleRightBumper) && gamepad1.right_bumper){
-                    clawRight.clawState = ServoClaw.ClawState.CLOSED;
+                    clawRight.clawServo.setPosition(clawRightOpen);
                 }
                 break;
             case CLOSED:
                 if ((gamepad1.left_bumper != lastToggleLeftBumper) && gamepad1.left_bumper){
-                    clawRight.clawState = ServoClaw.ClawState.OPEN;
+                    clawRight.clawServo.setPosition(clawRightClosed);
                 }
                 break;
         }

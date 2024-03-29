@@ -36,18 +36,21 @@ public class Tenacity_TeleOp extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         chassis = new TenacityChassis(gamepad1, telemetry, hardwareMap);
-        slides = new TenacitySlides(gamepad1, telemetry, hardwareMap);
+        slides = new TenacitySlides(arm, gamepad1, telemetry, hardwareMap);
         arm = new TenacityArm(slides, gamepad1, telemetry, hardwareMap);
         doubleClaw = new TenacityClaw(gamepad1, telemetry, hardwareMap);
         wrist = new TenacityWrist(gamepad1, telemetry, hardwareMap);
+
+        slides.arm = arm;
+        arm.slides = slides;
 
         teleOpState = TeleOpState.HOME;
         scoringState = TeleOpState.FIRST_LINE;
 
         while (opModeInInit()){
             slides.setSlidePower();
-            arm.setArmPower();
-            doubleClaw.setClawOpen();
+//            arm.setArmPower();
+//            doubleClaw.setClawOpen();
             wrist.setWristPosition();
 
             telemetry.addLine("Waiting For Start");

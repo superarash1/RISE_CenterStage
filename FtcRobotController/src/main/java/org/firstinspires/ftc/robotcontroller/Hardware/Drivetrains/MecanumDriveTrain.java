@@ -299,10 +299,10 @@ public abstract class MecanumDriveTrain extends MecanumDrive {
         backRight = new Motor(names[2], hardwareMap);
         backLeft = new Motor(names[3], hardwareMap);
 
-        frontRight.setDirectionReverse();
-        backRight.setDirectionReverse();
-        frontLeft.setDirectionForward();
-        backLeft.setDirectionForward();
+        frontRight.setDirectionForward();
+        backRight.setDirectionForward();
+        frontLeft.setDirectionReverse();
+        backLeft.setDirectionReverse();
 
         RobotPose = new Vector3D(getPoseEstimate().getX(), getPoseEstimate().getY(), getPoseEstimate().getHeading());
 

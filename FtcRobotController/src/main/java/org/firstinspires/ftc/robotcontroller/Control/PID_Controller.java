@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.robotcontroller.Control;
 
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class PID_Controller {
@@ -8,9 +9,7 @@ public class PID_Controller {
 
     public double tolerance;
 
-    public double kp;
-    public double kd;
-    public double ki;
+    public PIDCoefficients coeffs;
     public double a;
 
     public double error;
@@ -30,32 +29,31 @@ public class PID_Controller {
 
     public double errorChange;
 
-    public PID_Controller(double kp){
-        this(kp, 0, 0, 0);
+    @Deprecated
+    public PID_Controller(double p) {
+        this.coeffs = new PIDCoefficients(p, 0, 0);
+        this.a = 0;
     }
-
-    public PID_Controller(double kp, double kd){
-        this(kp, kd, 0, 0);
+    @Deprecated
+    public PID_Controller(double p, double d, double i) {
+        this.coeffs = new PIDCoefficients(p, i, d);
+        this.a = 0;
     }
-
-    public PID_Controller(double kp, double kd, double a){
-        this(kp, kd, a, 0);
-    }
-
-    public PID_Controller(double kp, double kd, double a, double ki){
-        this.kp = kp;
-        this.kd = kd;
+    @Deprecated
+    public PID_Controller(double p, double d, double i, double a) {
+        this.coeffs = new PIDCoefficients(p, i, d);
         this.a = a;
-        this.ki = ki;
     }
-
-
+    public PID_Controller(PIDCoefficients coeffs, double a){
+        this.coeffs = coeffs;
+        this.a = a;
+    }
 
     public double PID_Power(double currPos, double targetPos){
         error = targetPos - currPos;
         errorChange = error - previousError;
 
-        P = kp*error;
+        P = coeffs.p*error;
 
         deltaTime = runtime.seconds();
         runtime.reset();
@@ -65,11 +63,11 @@ public class PID_Controller {
         if (Math.abs(error) < tolerance) area = 0;
         if (targetPos != previousTarget) area = 0;
 
-        I = area*ki;
+        I = area*coeffs.i;
 
         currentFilterEstimate = (1-a) * errorChange + (a * previousFilterEstimate);
 
-        D = kd * (currentFilterEstimate / deltaTime);
+        D = coeffs.d * (currentFilterEstimate / deltaTime);
 
         previousError = error;
         previousFilterEstimate = currentFilterEstimate;
@@ -84,16 +82,16 @@ public class PID_Controller {
 
         errorChange = error - previousError;
 
-        P = kp*error;
+        P = coeffs.p*error;
 
         deltaTime = runtime.seconds();
         runtime.reset();
 
-        D = kd * (errorChange / deltaTime);
+        D = coeffs.d * (errorChange / deltaTime);
 
         area += error*deltaTime;
 
-        I = area*ki;
+        I = area*coeffs.i;
 
         previousError = error;
         previousFilterEstimate = currentFilterEstimate;
@@ -104,24 +102,24 @@ public class PID_Controller {
 
 
     public void setPIDCoefficients(double kp){
-        this.kp = kp;
+        this.coeffs.p = kp;
     }
 
     public void setPIDCoefficients(double kp, double kd){
-        this.kp = kp;
-        this.kd = kd;
+        this.coeffs.p = kp;
+        this.coeffs.d = kd;
     }
 
     public void setPIDCoefficients(double kp, double kd, double a){
-        this.kp = kp;
-        this.kd = kd;
+        this.coeffs.p = kp;
+        this.coeffs.d = kd;
         this.a = a;
     }
 
     public void setPIDCoefficients(double kp, double kd, double a, double ki){
-        this.kp = kp;
-        this.kd = kd;
+        this.coeffs.p = kp;
+        this.coeffs.d = kd;
         this.a = a;
-        this.ki = ki;
+        this.coeffs.i = ki;
     }
 }
