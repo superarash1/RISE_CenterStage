@@ -29,23 +29,16 @@ public class ClawRight extends ServoClaw {
         this.telemetry = telemetry;
     }
 
-    //TODO: reduce open angle,
     public void toggleClaw(){
         setPosition();
         switch (clawState){
             case OPEN:
-                setAngle(openPosition);
-
                 if ((gamepad1.y != lastToggleY) && gamepad1.y){
-
                     clawState = ClawState.CLOSED;
                 }
                 break;
             case CLOSED:
-                setAngle(closedPosition);
-
                 if ((gamepad1.y != lastToggleY) && gamepad1.y){
-
                     clawState = ClawState.OPEN;
                 }
                 break;

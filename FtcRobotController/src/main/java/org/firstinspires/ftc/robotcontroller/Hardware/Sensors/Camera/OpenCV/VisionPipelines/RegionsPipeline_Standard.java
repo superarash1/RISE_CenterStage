@@ -1,9 +1,5 @@
-package org.firstinspires.ftc.robotcontroller.Hardware.Sensors.Camera.OpenCV.VisionPipelines.VisionPortal_Pipelines;
+package org.firstinspires.ftc.robotcontroller.Hardware.Sensors.Camera.OpenCV.VisionPipelines;
 
-import android.graphics.Canvas;
-
-import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
-import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -12,7 +8,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-public class RegionsPipeline implements VisionProcessor {
+public class RegionsPipeline_Standard extends OpenCvPipeline {
     /** Most important section of the code: Colors **/
     static final Scalar GOLD = new Scalar(255, 215, 0);
     static final Scalar CRIMSON = new Scalar(220, 20, 60);
@@ -24,7 +20,7 @@ public class RegionsPipeline implements VisionProcessor {
     Mat HSV = new Mat();
 
     // Make a Constructor
-    public RegionsPipeline() {
+    public RegionsPipeline_Standard() {
 
     }
 
@@ -57,7 +53,7 @@ public class RegionsPipeline implements VisionProcessor {
     public int[] HSV_Value_2 = new int[3];
     public int[] HSV_Value_3 = new int[3];
 
-
+    @Override
     public Mat processFrame(Mat input) {
 
         // Converts the RGB colors from the video to HSV, which is more useful for image analysis
@@ -82,22 +78,6 @@ public class RegionsPipeline implements VisionProcessor {
         Imgproc.rectangle(HSV, region2_pointA, region2_pointB, CRIMSON,1);
         Imgproc.rectangle(HSV, region3_pointA, region3_pointB, GOLD,1);
 
-
         return HSV;
-    }
-
-    @Override
-    public void init(int width, int height, CameraCalibration calibration) {
-
-    }
-
-    @Override
-    public Object processFrame(Mat frame, long captureTimeNanos) {
-        return null;
-    }
-
-    @Override
-    public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
-
     }
 }

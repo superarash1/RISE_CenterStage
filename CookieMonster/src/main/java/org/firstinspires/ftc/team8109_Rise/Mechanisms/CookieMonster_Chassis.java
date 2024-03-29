@@ -44,8 +44,9 @@ public class CookieMonster_Chassis extends MecanumDriveTrain {
     DriveDirection driveDirection;
     Vector3D controllerInput = new Vector3D(0, 0, 0);
 
+    static String[] names = {"fLeft", "fRight", "bRight", "bLeft"};
     public CookieMonster_Chassis(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
-        super("fLeft", "fRight", "bRight", "bLeft", new CookieMonsterDriveConstants(),
+        super(names, new CookieMonsterDriveConstants(),
                 OdometryType.THREE_WHEEL_ODO, hardwareMap);
 
         reset();

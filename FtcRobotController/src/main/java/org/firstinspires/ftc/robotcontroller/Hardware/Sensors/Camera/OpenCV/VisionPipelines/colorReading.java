@@ -42,6 +42,8 @@ public class colorReading extends OpenCvPipeline {
 
     @Override
     public Mat processFrame(Mat input) {
+        telemetry.addData("[Hello]", "World!");
+        telemetry.update();
 
         // Define the dimensions and location of each region
         REGION_TOPLEFT_ANCHOR_POINT = new Point(input.cols()/2 - REGION_WIDTH/2,input.rows()/2 - REGION_HEIGHT/2);
@@ -67,11 +69,11 @@ public class colorReading extends OpenCvPipeline {
 
         // Draws rectangles representing the regions in the camera stream
         Imgproc.rectangle(colorSpace, region_pointA, region_pointB, GOLD,1);
-
-        telemetry.addData("Region 1", "%7d, %7d, %7d", channelsOfInterest[0], channelsOfInterest[1], channelsOfInterest[2]);
-        telemetry.addData("rows", input.rows());
-        telemetry.addData("columns", input.cols());
-        telemetry.update();
+//
+//        telemetry.addData("Region 1", "%7d, %7d, %7d", channelsOfInterest[0], channelsOfInterest[1], channelsOfInterest[2]);
+//        telemetry.addData("rows", input.rows());
+//        telemetry.addData("columns", input.cols());
+//        telemetry.update();
 
         return colorSpace;
     }

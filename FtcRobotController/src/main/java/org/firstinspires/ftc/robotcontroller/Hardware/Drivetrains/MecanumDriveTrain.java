@@ -33,6 +33,7 @@ import org.firstinspires.ftc.robotcontroller.Hardware.Resources.RoadRunnerQuicks
 import org.firstinspires.ftc.robotcontroller.Hardware.Sensors.DriveConstants_Mecanum;
 import org.firstinspires.ftc.robotcontroller.Hardware.Sensors.InertialMeasurementUnit;
 import org.firstinspires.ftc.robotcontroller.Hardware.Sensors.Odometry.StandardThreeWheelOdoLocalizer;
+import org.firstinspires.ftc.robotcontroller.Hardware.Sensors.Odometry.StandardTwoWheelOdoLocalizer;
 import org.firstinspires.ftc.robotcontroller.Math.Vectors.Vector3D;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -111,11 +112,12 @@ public abstract class MecanumDriveTrain extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
 
-    public org.firstinspires.ftc.robotcontroller.Hardware.Sensors.InertialMeasurementUnit InertialMeasurementUnit;
     private VoltageSensor batteryVoltageSensor;
 
     private List<Integer> lastEncPositions = new ArrayList<>();
     private List<Integer> lastEncVels = new ArrayList<>();
+
+    private InertialMeasurementUnit imu;
 
     public Gamepad gamepad1;
     public Telemetry telemetry;
@@ -132,8 +134,8 @@ public abstract class MecanumDriveTrain extends MecanumDrive {
     }
 
     //TODO: take out all thig of other drive constant files (parameter to input a DriveConstants class object?)
-    public MecanumDriveTrain(String flName, String frName, String brName, String blName, DriveConstants_Mecanum CONSTANTS,
-                             OdometryType odometryType, StandardThreeWheelOdoLocalizer localizer, HardwareMap hardwareMap) {
+    public MecanumDriveTrain(String[] names, DriveConstants_Mecanum CONSTANTS, OdometryType odometryType,
+                             StandardThreeWheelOdoLocalizer localizer, HardwareMap hardwareMap) {
 
         //TODO: Make it different files
         super(CONSTANTS.kV, CONSTANTS.kA, CONSTANTS.kStatic, CONSTANTS.TRACK_WIDTH, CONSTANTS.WHEEL_BASE, CONSTANTS.LATERAL_MULTIPLIER);
@@ -142,8 +144,6 @@ public abstract class MecanumDriveTrain extends MecanumDrive {
         VEL_CONSTRAINT = getVelocityConstraint(CONSTANTS.MAX_VEL, CONSTANTS.MAX_ANG_VEL, CONSTANTS.TRACK_WIDTH);
 
         ACCEL_CONSTRAINT = getAccelerationConstraint(CONSTANTS.MAX_ACCEL);
-
-        if (odometryType == OdometryType.DRIVE_ENCODERS) InertialMeasurementUnit = new InertialMeasurementUnit(hardwareMap);
 
         follower = new HolonomicPIDVAFollower(CONSTANTS.TRANSLATIONAL_PID, CONSTANTS.TRANSLATIONAL_PID, CONSTANTS.HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
@@ -157,10 +157,10 @@ public abstract class MecanumDriveTrain extends MecanumDrive {
         }
 
         // TODO: adjust the names of the following hardware devices to match your configuration
-        frontLeft = new Motor(flName, hardwareMap);
-        frontRight = new Motor(frName, hardwareMap);
-        backRight = new Motor(brName, hardwareMap);
-        backLeft = new Motor(blName, hardwareMap);
+        frontLeft = new Motor(names[0], hardwareMap);
+        frontRight = new Motor(names[1], hardwareMap);
+        backRight = new Motor(names[2], hardwareMap);
+        backLeft = new Motor(names[3], hardwareMap);
 
         frontRight.setDirectionReverse();
         backRight.setDirectionReverse();
@@ -197,9 +197,8 @@ public abstract class MecanumDriveTrain extends MecanumDrive {
         );
     }
 
-
-    public MecanumDriveTrain(String flName, String frName, String brName, String blName, DriveConstants_Mecanum CONSTANTS,
-                             OdometryType odometryType, HardwareMap hardwareMap) {
+    public MecanumDriveTrain(String[] names, DriveConstants_Mecanum CONSTANTS, OdometryType odometryType,
+                             StandardTwoWheelOdoLocalizer localizer, HardwareMap hardwareMap) {
 
         //TODO: Make it different files
         super(CONSTANTS.kV, CONSTANTS.kA, CONSTANTS.kStatic, CONSTANTS.TRACK_WIDTH, CONSTANTS.WHEEL_BASE, CONSTANTS.LATERAL_MULTIPLIER);
@@ -209,7 +208,7 @@ public abstract class MecanumDriveTrain extends MecanumDrive {
 
         ACCEL_CONSTRAINT = getAccelerationConstraint(CONSTANTS.MAX_ACCEL);
 
-        if (odometryType == OdometryType.DRIVE_ENCODERS) InertialMeasurementUnit = new InertialMeasurementUnit(hardwareMap);
+        if (odometryType == OdometryType.DRIVE_ENCODERS) imu = new InertialMeasurementUnit(hardwareMap);
 
         follower = new HolonomicPIDVAFollower(CONSTANTS.TRANSLATIONAL_PID, CONSTANTS.TRANSLATIONAL_PID, CONSTANTS.HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
@@ -223,10 +222,82 @@ public abstract class MecanumDriveTrain extends MecanumDrive {
         }
 
         // TODO: adjust the names of the following hardware devices to match your configuration
-        frontLeft = new Motor(flName, hardwareMap);
-        frontRight = new Motor(frName, hardwareMap);
-        backRight = new Motor(brName, hardwareMap);
-        backLeft = new Motor(blName, hardwareMap);
+        frontLeft = new Motor(names[0], hardwareMap);
+        frontRight = new Motor(names[1], hardwareMap);
+        backRight = new Motor(names[2], hardwareMap);
+        backLeft = new Motor(names[3], hardwareMap);
+
+        frontRight.setDirectionReverse();
+        backRight.setDirectionReverse();
+        frontLeft.setDirectionForward();
+        backLeft.setDirectionForward();
+
+        RobotPose = new Vector3D(getPoseEstimate().getX(), getPoseEstimate().getY(), getPoseEstimate().getHeading());
+
+        motors = Arrays.asList(frontLeft, frontRight, backRight, backLeft);
+
+        for (Motor motor : motors) {
+            motor.setBreakMode();
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
+            motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+            motor.setMotorType(motorConfigurationType);
+        }
+
+        if (CONSTANTS.RUN_USING_ENCODER && CONSTANTS.MOTOR_VELO_PID != null) {
+            setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, CONSTANTS.MOTOR_VELO_PID);
+        }
+
+        // TODO: adjust the names of the following hardware devices to match your configuration
+//        imu = hardwareMap.get(BNO055IMU.class, "imu");
+//        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+//        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+//        imu.initialize(parameters);
+
+        // TODO: if desired, use setLocalizer() to change the localization method
+        if (odometryType == OdometryType.THREE_WHEEL_ODO || odometryType == OdometryType.TWO_WHEEL_ODO){
+            setLocalizer(localizer);
+        }
+
+        List<Integer> lastTrackingEncPositions = new ArrayList<>();
+        List<Integer> lastTrackingEncVels = new ArrayList<>();
+
+        trajectorySequenceRunner = new TrajectorySequenceRunner(
+                follower, HEADING_PID, batteryVoltageSensor,
+                lastEncPositions, lastEncVels, lastTrackingEncPositions, lastTrackingEncVels
+        );
+    }
+
+
+    public MecanumDriveTrain(String[] names, DriveConstants_Mecanum CONSTANTS,
+                             OdometryType odometryType, HardwareMap hardwareMap) {
+
+        //TODO: Make it different files
+        super(CONSTANTS.kV, CONSTANTS.kA, CONSTANTS.kStatic, CONSTANTS.TRACK_WIDTH, CONSTANTS.WHEEL_BASE, CONSTANTS.LATERAL_MULTIPLIER);
+
+        this.CONSTANTS = CONSTANTS;
+        VEL_CONSTRAINT = getVelocityConstraint(CONSTANTS.MAX_VEL, CONSTANTS.MAX_ANG_VEL, CONSTANTS.TRACK_WIDTH);
+
+        ACCEL_CONSTRAINT = getAccelerationConstraint(CONSTANTS.MAX_ACCEL);
+
+        imu = new InertialMeasurementUnit(hardwareMap);
+
+        follower = new HolonomicPIDVAFollower(CONSTANTS.TRANSLATIONAL_PID, CONSTANTS.TRANSLATIONAL_PID, CONSTANTS.HEADING_PID,
+                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
+
+        LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
+
+        batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
+
+        for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
+            module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        }
+
+        // TODO: adjust the names of the following hardware devices to match your configuration
+        frontLeft = new Motor(names[0], hardwareMap);
+        frontRight = new Motor(names[1], hardwareMap);
+        backRight = new Motor(names[2], hardwareMap);
+        backLeft = new Motor(names[3], hardwareMap);
 
         frontRight.setDirectionReverse();
         backRight.setDirectionReverse();
@@ -363,26 +434,6 @@ public abstract class MecanumDriveTrain extends MecanumDrive {
         }
     }
 
-    public void setWeightedDrivePower(Pose2d drivePower) {
-        Pose2d vel = drivePower;
-
-        if (Math.abs(drivePower.getX()) + Math.abs(drivePower.getY())
-                + Math.abs(drivePower.getHeading()) > 1) {
-            // re-normalize the powers according to the weights
-            double denom = VX_WEIGHT * Math.abs(drivePower.getX())
-                    + VY_WEIGHT * Math.abs(drivePower.getY())
-                    + OMEGA_WEIGHT * Math.abs(drivePower.getHeading());
-
-            vel = new Pose2d(
-                    VX_WEIGHT * drivePower.getX(),
-                    VY_WEIGHT * drivePower.getY(),
-                    OMEGA_WEIGHT * drivePower.getHeading()
-            ).div(denom);
-        }
-
-        setDrivePower(vel);
-    }
-
     @NonNull
     public List<Double> getWheelPositions() {
         List<Double> wheelPositions = new ArrayList<>();
@@ -399,7 +450,20 @@ public abstract class MecanumDriveTrain extends MecanumDrive {
         }
         return wheelVelocities;
     }
+    @Override
+    public double getRawExternalHeading() {
+        return imu.getFirstAngle();
+    }
 
+    @Override
+    public Double getExternalHeadingVelocity() {
+        // To work around an SDK bug, use -zRotationRate in place of xRotationRate
+        // and -xRotationRate in place of zRotationRate (yRotationRate behaves as
+        // expected). This bug does NOT affect orientation.
+        //
+        // See https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/251 for details.
+        return (double) -imu.getXAngularVelocity();
+    }
     public void setMotorPowers(double v, double v1, double v2, double v3) {
         frontLeft.setPower(v);
         backLeft.setPower(v1);
@@ -407,21 +471,9 @@ public abstract class MecanumDriveTrain extends MecanumDrive {
         frontRight.setPower(v3);
     }
 
-    public double getRawExternalHeading() {
-        return 0;
-    }
 
     public double encoderTicksToInches(double ticks) {
         return CONSTANTS.WHEEL_RADIUS * 2 * Math.PI * CONSTANTS.GEAR_RATIO * ticks / CONSTANTS.TICKS_PER_REV;
-    }
-
-    public Double getExternalHeadingVelocity() {
-        // To work around an SDK bug, use -zRotationRate in place of xRotationRate
-        // and -xRotationRate in place of zRotationRate (yRotationRate behaves as
-        // expected). This bug does NOT affect orientation.
-        //
-        // See https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/251 for details.
-        return (double) -InertialMeasurementUnit.imu.getAngularVelocity().xRotationRate;
     }
 
     public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel, double maxAngularVel, double trackWidth) {

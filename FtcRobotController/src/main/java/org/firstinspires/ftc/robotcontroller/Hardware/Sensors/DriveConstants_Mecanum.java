@@ -33,6 +33,9 @@ public abstract class DriveConstants_Mecanum {
     public double VY_WEIGHT;
     public double OMEGA_WEIGHT;
 
+    public double LATERAL_DISTANCE; // in; distance between the left and right wheels 11.08
+    public double FORWARD_OFFSET; // in; offset of the lateral wheel
+
     /*
      * Set RUN_USING_ENCODER to true to enable built-in hub velocity control using drive encoders.
      * Set this flag to false if drive encoders are not present and an alternative localization

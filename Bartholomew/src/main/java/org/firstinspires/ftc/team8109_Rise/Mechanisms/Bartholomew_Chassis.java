@@ -79,8 +79,10 @@ public class Bartholomew_Chassis extends MecanumDriveTrain {
 
     public Vector3D RobotPose;
 
+    static String[] names = {"fLeft", "fRight", "bRight", "bLeft"};
+
     public Bartholomew_Chassis(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
-        super("fLeft", "fRight", "bRight", "bLeft", new Bartholomew_DriveConstants(),
+        super(names, new Bartholomew_DriveConstants(),
                 OdometryType.THREE_WHEEL_ODO, new Bartholomew_OdometryLocalizer(hardwareMap), hardwareMap);
 
         reset();

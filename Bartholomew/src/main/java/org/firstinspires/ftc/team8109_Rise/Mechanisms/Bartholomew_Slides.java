@@ -71,7 +71,7 @@ public class Bartholomew_Slides extends Slides {
     // Method looped to continually set power to slides based on state
     public void setSlidePower(){
         /* PID controller calculates the power needed to be set to the motors to stay at the target position  */
-        slidesPower = slidesPID.PID_Power(getHeight(), targetPos);
+        slidesPower = slidesPID.PID_Power(getExtension(), targetPos);
         slidesPID.tolerance = 0.001;
         switch (slidesState){
             case GROUND:
@@ -214,14 +214,14 @@ public class Bartholomew_Slides extends Slides {
 
     // Sends telemetry data for slides to a queue to be shown on driver station after telemetry.update() is called
     public void slidesTelemetry(){
-        telemetry.addData("Slides Height", getHeight());
+        telemetry.addData("Slides Height", getExtension());
         telemetry.addData("Slide State", slidesState);
         telemetry.addData("Error", slidesPID.error);
         telemetry.addData("PID Power", slidesPower);
     }
 
     public void tuningTelemetry(){
-        telemetry.addData("slides height", getHeight());
+        telemetry.addData("slides height", getExtension());
         telemetry.addData("Slide State", slidesState);
         telemetry.addData("Error", slidesPID.error);
         telemetry.addData("Anti-Gravity", kGravity);

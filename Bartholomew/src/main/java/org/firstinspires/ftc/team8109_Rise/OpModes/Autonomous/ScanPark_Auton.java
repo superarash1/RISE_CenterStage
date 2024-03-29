@@ -69,7 +69,6 @@ public class ScanPark_Auton extends LinearOpMode {
         });
 
         // Adjust 0.5 left
-
         while (opModeInInit()){
             if (pipeline.findColor() == ColorPipeline.Colors.BLUE){
                 parkingZone = ParkingZone.LEFT;

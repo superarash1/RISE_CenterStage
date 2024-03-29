@@ -15,8 +15,9 @@ public class BeefyChassis extends MecanumDriveTrain {
 
     public TrapezoidalMotionProfile velocityController;
 
+    static String[] names = {"fLeft", "fRight", "bRight", "bLeft"};
     public BeefyChassis(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
-        super("fLeft", "fRight", "bRight", "bLeft", new BeefyDriveConstants(),
+        super(names, new BeefyDriveConstants(),
                 OdometryType.THREE_WHEEL_ODO, new BeefCake_OdometryLocalizer(hardwareMap), hardwareMap);
 
         reset();

@@ -79,4 +79,28 @@ public class InertialMeasurementUnit {
 
         return -globalAngle;
     }
+
+    public double getFirstAngle(){
+        return imu.getAngularOrientation().firstAngle;
+    }
+
+    public double getSecondAngle(){
+        return imu.getAngularOrientation().firstAngle;
+    }
+
+    public double getThirdAngle(){
+        return imu.getAngularOrientation().firstAngle;
+    }
+
+    public double getXAngularVelocity(){
+        return imu.getAngularVelocity().xRotationRate;
+    }
+
+    public double getYAngularVelocity(){
+        return imu.getAngularVelocity().yRotationRate;
+    }
+
+    public double getZAngularVelocity(){
+        return imu.getAngularVelocity().zRotationRate;
+    }
 }

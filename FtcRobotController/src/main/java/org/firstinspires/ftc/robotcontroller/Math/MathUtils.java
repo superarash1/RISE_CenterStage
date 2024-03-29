@@ -43,9 +43,9 @@ public class MathUtils {
         double maxY = Math.max(start.B, end.B);
         return (point.A < maxX) && (point.A > minX) && (point.B < maxY) && (point.B > minY);
     }
-//
-//    public static ArrayList<Vector2> approxCurve(Vector2 start, Vector2 end, Vector2 control, double numSegments){
-//        ArrayList<Vector2> coordinates = new ArrayList<Vector2>();
+////
+//    public static ArrayList<Vector> approxCurve(Vector start, Vector end, Vector control, double numSegments){
+//        ArrayList<Vector> coordinates = new ArrayList<Vector>();
 //
 //        coordinates.add(start);
 //
@@ -55,9 +55,9 @@ public class MathUtils {
 //        while (s < t) {
 //            s += 1/numSegments;
 //            double controlParameter = (1 - s);
-//            Vector2 Q_0 = new Vector2(controlParameter * start.getA(), controlParameter * start.getB()).add(new Vector2(s * control.getA(), s * control.getB()));
-//            Vector2 Q_1 = new Vector2(controlParameter * control.getA(), controlParameter * control.getB()).add(new Vector2(s * end.getA(), s * end.getB()));
-//            Vector2 R_0 = new Vector2(controlParameter * Q_0.getA(), controlParameter * Q_0.getB()).add(new Vector2(s * Q_1.getA(), s * Q_1.getB()));
+//            Vector Q_0 = new Vector(new double[]{controlParameter * start.get(0), controlParameter * start.get(1)}).add(new Vector(new double[]{s * control.get(0), s * control.get(1)}));
+//            Vector Q_1 = new Vector(controlParameter * control.getA(), controlParameter * control.getB()).add(new Vector(s * end.getA(), s * end.getB()));
+//            Vector R_0 = new Vector(controlParameter * Q_0.getA(), controlParameter * Q_0.getB()).add(new Vector(s * Q_1.getA(), s * Q_1.getB()));
 //            coordinates.add(R_0);
 //        }
 //        coordinates.remove(coordinates.size()-1);
@@ -138,32 +138,170 @@ public class MathUtils {
 //    public static Vector2 toCartesian(Vector2 pos){
 //        return toCartesian(pos.getA(), pos.getB());
 //    }
-//
-//    public static double millisToSec(long time){
-//        return (time/1000.0);
-//    }
-//
-//    public static long secToMillis(long time){
-//        return time * 1000;
-//    }
-//
-//    public static long secToNano(long time){
-//        return time * ((long)1_000_000_000);
-//    }
-//
-//    public static long millisToNano(long time){
-//        return secToNano((long)millisToSec(time));
-//    }
-//
-//    public static long nanoToMillis(long time){
-//        return secToMillis(nanoToSec(time));
-//    }
-//
-//    public static long nanoToSec(long time){
-//        return time/((long)1_000_000_000);
-//    }
-//
-//    public static double nanoToDSec(long time){
-//        return time/1_000_000_000.0;
-//    }
+
+
+    /**
+     * Puts a matrix into reduced row echelon form
+     *
+     * @param matrix input matrix
+     *
+     * @return 2D result matrix
+     */
+    public static double[][] rref(double[][] matrix){
+        int columnIndex = 0;
+        int cursor;
+
+        // number of rows and columns in matrix
+        int getRowSize = matrix.length;
+        int getColumnSize = matrix[0].length;
+
+
+        loop:
+        for(int rowIndex = 0; rowIndex < getRowSize; rowIndex++){
+            if(getColumnSize <= columnIndex){
+                break;
+            }
+            cursor = rowIndex;
+            while(matrix[cursor][columnIndex] == 0){
+                cursor++;
+                if(getRowSize == cursor){
+                    cursor = rowIndex;
+                    columnIndex++;
+                    if(getColumnSize == columnIndex){
+                        break loop;
+                    }
+                }
+
+            }
+
+            matrix = rowSwap(matrix, cursor, rowIndex);
+            if(matrix[rowIndex][columnIndex] != 0){
+                matrix = rowScale(matrix, rowIndex, (1/matrix[rowIndex][columnIndex]));
+            }
+
+            for(cursor = 0; cursor < getRowSize; cursor++){
+                if(cursor != rowIndex){
+                    matrix = rowAddScale(matrix, rowIndex, cursor,((-1) * matrix[cursor][columnIndex]));
+                }
+            }columnIndex++;
+        }return matrix;
+    }
+
+    /**
+     * Swap positions of 2 rows
+     *
+     * @param matrix matrix before row additon
+     * @param rowIndex1 int index of row to swap
+     * @param rowIndex2 int index of row to swap
+     *
+     * @return matrix after row swap
+     */
+    private static double[][] rowSwap(double[][] matrix, int rowIndex1,
+                                      int rowIndex2){
+        // number of columns in matrix
+        int numColumns = matrix[0].length;
+
+        // holds number to be swapped
+        double hold;
+
+        for(int k = 0; k < numColumns; k++){
+            hold = matrix[rowIndex2][k];
+            matrix[rowIndex2][k] = matrix[rowIndex1][k];
+            matrix[rowIndex1][k] = hold;
+        }
+
+        return matrix;
+    }
+
+    /**
+     * Adds 2 rows together row2 = row2 + row1
+     *
+     * @param matrix matrix before row additon
+     * @param rowIndex1 int index of row to be added
+     * @param rowIndex2 int index or row that row1 is added to
+     *
+     * @return matrix after row addition
+     */
+    private static double[][] rowAdd(double[][] matrix, int rowIndex1,
+                                     int rowIndex2){
+        // number of columns in matrix
+        int numColumns = matrix[0].length;
+
+        for(int k = 0; k < numColumns; k++){
+            matrix[rowIndex2][k] += matrix[rowIndex1][k];
+        }
+
+        return matrix;
+    }
+
+    /**
+     * Multiplies a row by a scalar
+     *
+     * @param matrix matrix before row additon
+     * @param rowIndex int index of row to be scaled
+     * @param scalar double to scale row by
+     *
+     * @return matrix after row scaling
+     */
+    private static double[][] rowScale(double[][] matrix, int rowIndex,
+                                       double scalar){
+        // number of columns in matrix
+        int numColumns = matrix[0].length;
+
+        for(int k = 0; k < numColumns; k++){
+            matrix[rowIndex][k] *= scalar;
+        }
+
+        return matrix;
+    }
+
+    /**
+     * Adds a row by the scalar of another row
+     * row2 = row2 + (row1 * scalar)
+     * @param matrix matrix before row additon
+     * @param rowIndex1 int index of row to be added
+     * @param rowIndex2 int index or row that row1 is added to
+     * @param scalar double to scale row by
+     *
+     * @return matrix after row addition
+     */
+    private static double[][] rowAddScale(double[][] matrix, int rowIndex1,
+                                          int rowIndex2, double scalar){
+        // number of columns in matrix
+        int numColumns = matrix[0].length;
+
+        for(int k = 0; k < numColumns; k++){
+            matrix[rowIndex2][k] += (matrix[rowIndex1][k] * scalar);
+        }
+
+        return matrix;
+    }
+
+    public static double millisToSec(long time){
+        return (time/1000.0);
+    }
+
+    public static long secToMillis(long time){
+        return time * 1000;
+    }
+
+    public static long secToNano(long time){
+        return time * ((long)1_000_000_000);
+    }
+
+    public static long millisToNano(long time){
+        return secToNano((long)millisToSec(time));
+    }
+
+    public static long nanoToMillis(long time){
+        return secToMillis(nanoToSec(time));
+    }
+
+    public static long nanoToSec(long time){
+        return time/((long)1_000_000_000);
+    }
+
+    public static double nanoToDSec(long time){
+        return time/1_000_000_000.0;
+    }
 }

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.robotcontroller.Hardware.Arms;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcontroller.Hardware.Motor;
@@ -12,7 +13,10 @@ public abstract class MotorArm {
     public double initialAngle;
     public double gearRatio;
 
+    public BNO055IMU imu;
+
     public MotorArm(int motorCount, String[] name, double CPR, double gearRatio, double kGravity, double initialAngle, HardwareMap hardwareMap){
+
 
         Motor[] motors = new Motor[motorCount];
 
@@ -28,9 +32,19 @@ public abstract class MotorArm {
             motor.setBreakMode();
         }
 
-        //TODO
-//        leftBarMotor.setDirectionReverse();
-//        rightBarMotor.setDirectionForward();
+        // IMU Setup
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+
+        parameters.mode = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+//        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
+        parameters.accelUnit = BNO055IMU.AccelUnit.MILLI_EARTH_GRAVITY;
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "ARM_IMU";
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu_arm");
+
+        imu.initialize(parameters);
 
         this.gearRatio = gearRatio;
         this.kGravity = kGravity;
@@ -38,14 +52,11 @@ public abstract class MotorArm {
 
     }
 
-    //GR = 0.2380952380952381
-    // initialAngle = -37 degrees??? (convert to radians)
-
     public void setPower(double power){
         //TODO: check if gravity is exactly directly proportional with Cos(angle)
         antiGravity = kGravity*Math.cos(getAngle());
 
-        for (Motor motor : motors) {
+        for (Motor motor : motors){
             motor.setPower(antiGravity + power);
         }
     }

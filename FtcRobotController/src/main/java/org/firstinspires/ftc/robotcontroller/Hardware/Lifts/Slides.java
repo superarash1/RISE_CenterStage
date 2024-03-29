@@ -42,7 +42,7 @@ public abstract class Slides {
         }
     }
 
-    public double getHeight(){
+    public double getExtension(){
         if (method == StringingMethod.CONTINUOUS){
             height = Math.toRadians(motors[1].getCurrPosDegrees()) * pulleyRadius;
         } else if (method == StringingMethod.CASCADE){
