@@ -7,7 +7,8 @@ import org.firstinspires.ftc.robotcontroller.Hardware.Sensors.Odometry.StandardT
 
 public class BeefCake_OdometryLocalizer extends StandardThreeWheelOdoLocalizer {
 
-    static String[] configNames = {"fRight", "rightEncoder", "middleEncoder"};
+
+    static String[] configNames = {"leftEncoder", "rightEncoder", "fRight"};
 
     public static double TICKS_PER_REV = 8192;
     public static double WHEEL_RADIUS = 0.688975; // in

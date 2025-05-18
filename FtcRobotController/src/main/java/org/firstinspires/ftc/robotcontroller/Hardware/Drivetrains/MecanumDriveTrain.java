@@ -162,10 +162,11 @@ public abstract class MecanumDriveTrain extends MecanumDrive {
         backRight = new Motor(names[2], hardwareMap);
         backLeft = new Motor(names[3], hardwareMap);
 
-        frontRight.setDirectionReverse();
-        backRight.setDirectionReverse();
-        frontLeft.setDirectionForward();
-        backLeft.setDirectionForward();
+        frontRight.setDirectionForward();
+        
+        backRight.setDirectionForward();
+        frontLeft.setDirectionReverse();
+        backLeft.setDirectionReverse();
 
         RobotPose = new Vector3D(getPoseEstimate().getX(), getPoseEstimate().getY(), getPoseEstimate().getHeading());
 
@@ -310,7 +311,7 @@ public abstract class MecanumDriveTrain extends MecanumDrive {
 
         for (Motor motor : motors) {
             motor.setBreakMode();
-            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
             motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
             motor.setMotorType(motorConfigurationType);
@@ -329,11 +330,12 @@ public abstract class MecanumDriveTrain extends MecanumDrive {
         );
     }
 
+    // (leftstick_y, _______. rightstickx)
     public void setDriveVectorsRobotCentric(Vector3D input){
-        fLeft = CONSTANTS.VX_WEIGHT * input.A - CONSTANTS.VY_WEIGHT * input.B - CONSTANTS.OMEGA_WEIGHT * input.C;
-        fRight = CONSTANTS.VX_WEIGHT * input.A + CONSTANTS.VY_WEIGHT * input.B + CONSTANTS.OMEGA_WEIGHT * input.C;
-        bRight = CONSTANTS.VX_WEIGHT * input.A - CONSTANTS.VY_WEIGHT * input.B + CONSTANTS.OMEGA_WEIGHT * input.C;
-        bLeft = CONSTANTS.VX_WEIGHT * input.A + CONSTANTS.VY_WEIGHT * input.B - CONSTANTS.OMEGA_WEIGHT * input.C;
+        fLeft = CONSTANTS.VX_WEIGHT * input.A - CONSTANTS.VY_WEIGHT * input.B + CONSTANTS.OMEGA_WEIGHT * input.C;
+        fRight = CONSTANTS.VX_WEIGHT * input.A + CONSTANTS.VY_WEIGHT * input.B - CONSTANTS.OMEGA_WEIGHT * input.C;
+        bRight = CONSTANTS.VX_WEIGHT * input.A - CONSTANTS.VY_WEIGHT * input.B - CONSTANTS.OMEGA_WEIGHT * input.C;
+        bLeft = CONSTANTS.VX_WEIGHT * input.A + CONSTANTS.VY_WEIGHT * input.B + CONSTANTS.OMEGA_WEIGHT * input.C;
 
         max = Math.max(Math.max(Math.abs(fLeft), Math.abs(fRight)), Math.max(Math.abs(bLeft), Math.abs(bRight)));
         if (max > 1.0) {
@@ -345,7 +347,6 @@ public abstract class MecanumDriveTrain extends MecanumDrive {
 
         setPower(fLeft, fRight, bRight, bLeft);
     }
-
 
     public void ManualDrive(){
         controllerInput.set(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);

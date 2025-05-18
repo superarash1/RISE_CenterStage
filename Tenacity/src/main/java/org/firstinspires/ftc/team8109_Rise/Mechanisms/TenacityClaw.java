@@ -14,7 +14,9 @@ public class TenacityClaw {
 
     enum ClawState {
         OPEN,
-        CLOSED
+        CLOSED,
+        LEFT_OPEN,
+        RIGHT_OPEN
     }
 
     public static double clawLeftOpen = 0.4;
@@ -47,6 +49,14 @@ public class TenacityClaw {
                 if ((gamepad1.y != lastToggleY) && gamepad1.y){
                     clawState = ClawState.CLOSED;
                 }
+
+                if ((gamepad1.left_bumper != lastToggleLeftBumper) && gamepad1.left_bumper){
+                    clawState = ClawState.LEFT_OPEN;
+                }
+
+                if ((gamepad1.right_bumper != lastToggleRightBumper) && gamepad1.right_bumper){
+                    clawState = ClawState.RIGHT_OPEN;
+                }
                 break;
             case CLOSED:
                 clawLeft.clawServo.setPosition(clawLeftClosed);
@@ -54,45 +64,42 @@ public class TenacityClaw {
                 if ((gamepad1.y != lastToggleY) && gamepad1.y){
                     clawState = ClawState.OPEN;
                 }
-                break;
-        }
-        lastToggleY = gamepad1.y;
-    }
 
-    public void toggleLeftClaw(){
-//        clawLeft.setPosition();
-
-        switch (clawState){
-            case OPEN:
                 if ((gamepad1.left_bumper != lastToggleLeftBumper) && gamepad1.left_bumper){
-                    clawLeft.clawServo.setPosition(clawLeftOpen);
+                    clawState = ClawState.LEFT_OPEN;
                 }
-                break;
-            case CLOSED:
-                if ((gamepad1.left_bumper != lastToggleLeftBumper) && gamepad1.left_bumper){
-                    clawLeft.clawServo.setPosition(clawLeftClosed);
-                }
-                break;
-        }
-        lastToggleY = gamepad1.y;
-    }
 
-    public void toggleRightClaw(){
-//        clawRight.setPosition();
-
-        switch (clawState){
-            case OPEN:
                 if ((gamepad1.right_bumper != lastToggleRightBumper) && gamepad1.right_bumper){
-                    clawRight.clawServo.setPosition(clawRightOpen);
+                    clawState = ClawState.RIGHT_OPEN;
                 }
                 break;
-            case CLOSED:
+            case LEFT_OPEN:
+                clawLeft.clawServo.setPosition(clawLeftOpen);
+                clawRight.clawServo.setPosition(clawRightClosed);
+
+                if ((gamepad1.right_bumper != lastToggleRightBumper) && gamepad1.right_bumper){
+                    clawState = ClawState.RIGHT_OPEN;
+                }
+
+                if ((gamepad1.y != lastToggleY) && gamepad1.y){
+                    clawState = ClawState.OPEN;
+                }
+                break;
+            case RIGHT_OPEN:
+                clawRight.clawServo.setPosition(clawRightOpen);
+                clawLeft.clawServo.setPosition(clawLeftClosed);
+
                 if ((gamepad1.left_bumper != lastToggleLeftBumper) && gamepad1.left_bumper){
-                    clawRight.clawServo.setPosition(clawRightClosed);
+                    clawState = ClawState.LEFT_OPEN;
+                }
+
+                if ((gamepad1.y != lastToggleY) && gamepad1.y){
+                    clawState = ClawState.OPEN;
                 }
                 break;
         }
         lastToggleY = gamepad1.y;
+        lastToggleLeftBumper = gamepad1.left_bumper;
     }
     public void setClawOpen(){
         clawLeft.setAngle(ClawLeft.openPosition);

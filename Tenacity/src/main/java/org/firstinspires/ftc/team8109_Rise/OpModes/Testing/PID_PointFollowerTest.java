@@ -12,17 +12,20 @@ public class PID_PointFollowerTest extends LinearOpMode {
     TenacityChassis chassis;
     Vector3D point = new Vector3D(0, 0, Math.toRadians(90));
 
+    public static double X_COORDINATE = 0;
+    public static double Y_COORDINATE = 0;
+    public static double HEADING_COORDINATE = Math.toRadians(90);
+
     @Override
     public void runOpMode() throws InterruptedException {
         chassis = new TenacityChassis(gamepad1, telemetry, hardwareMap);
 
-        chassis.TranslationalPID_X.setPIDCoefficients(0.13, 0.0375, 0, 0.001);//0.03 0.001
-        chassis.TranslationalPID_Y.setPIDCoefficients(0.13, 0.0375, 0, 0.001);
-        chassis.HeadingPID.setPIDCoefficients(1.5, 0.04, 0, 0);
-
         waitForStart();
 
         while (opModeIsActive()){
+
+            point.set(X_COORDINATE, Y_COORDINATE, HEADING_COORDINATE);
+
             chassis.update();
             chassis.updatePoseEstimate();
             chassis.goToPosePID(point);

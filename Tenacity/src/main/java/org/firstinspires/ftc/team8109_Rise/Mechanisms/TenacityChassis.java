@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team8109_Rise.Mechanisms;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
 import org.firstinspires.ftc.robotcontroller.Control.MotionProfiling.TrapezoidalMotionProfile;
 import org.firstinspires.ftc.robotcontroller.Control.PID_Controller;
@@ -14,6 +15,10 @@ public class TenacityChassis extends MecanumDriveTrain {
 
     public TrapezoidalMotionProfile velocityController;
 
+    public static PIDCoefficients CHASSIS_PID_X_COEFFICIENTS = new PIDCoefficients(0,0,0);
+    public static PIDCoefficients CHASSIS_PID_Y_COEFFICIENTS = new PIDCoefficients(0,0,0);
+    public static PIDCoefficients CHASSIS_PID_HEADING_COEFFICIENTS = new PIDCoefficients(0,0,0);
+
     static String[] names = {"fLeft", "fRight", "bRight", "bLeft"};
     public TenacityChassis(Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap){
 //        super(names, new TenacityDriveConstants(),
@@ -23,9 +28,9 @@ public class TenacityChassis extends MecanumDriveTrain {
 
         reset();
 
-        TranslationalPID_X = new PID_Controller(0, 0, 0, 0);//12.5 volts, a = 0
-        TranslationalPID_Y = new PID_Controller(0, 0, 0, 0);
-        HeadingPID = new PID_Controller(0, 0, 0, 0);
+        TranslationalPID_X = new PID_Controller(CHASSIS_PID_X_COEFFICIENTS, 0);//12.5 volts, a = 0
+        TranslationalPID_Y = new PID_Controller(CHASSIS_PID_Y_COEFFICIENTS, 0);
+        HeadingPID = new PID_Controller(CHASSIS_PID_HEADING_COEFFICIENTS, 0);
 
         velocityController = new TrapezoidalMotionProfile(CONSTANTS.MAX_VEL, CONSTANTS.MAX_ACCEL, 0, 0, 0);
 
@@ -94,7 +99,7 @@ public class TenacityChassis extends MecanumDriveTrain {
 
     // All parameters in this method are vector valued functions (potentially bake parametric equations into the vector class Vector3D.t global  variable for instance)
     public void followParametricEquation(Vector3D velocity, Vector3D idealPosition, double currentArcLength, double totalArcLength){
-        double speed = velocityController.getProfilePower(currentArcLength, totalArcLength);
+        double speed = velocityController.getPosProfilePower(currentArcLength, totalArcLength);
         Vector3D velocityNormalized = velocity.normalize();
         Vector3D idealOutput = velocityNormalized.scale(speed);
 
@@ -107,8 +112,8 @@ public class TenacityChassis extends MecanumDriveTrain {
     }
 
     public void goToPoseTrapezoidal(Vector3D input){
-        odoDrive = -TranslationalProfile_X.getProfilePower(getPoseEstimate().getX(), input.A);
-        odoStrafe = -TranslationalProfile_Y.getProfilePower(getPoseEstimate().getY(), input.B);
+        odoDrive = -TranslationalProfile_X.getPosProfilePower(getPoseEstimate().getX(), input.A);
+        odoStrafe = -TranslationalProfile_Y.getPosProfilePower(getPoseEstimate().getY(), input.B);
         odoTurn = -HeadingPID.PID_Power(angleWrap(getPoseEstimate().getHeading()), input.C);
 
         odoPID_Vector.set(odoDrive, odoStrafe, odoTurn);

@@ -19,6 +19,10 @@ public abstract class ServoArm {
 
     ServoArmType servoArmType;
 
+    public ServoArm(){
+
+    }
+
     public ServoArm(ServoArmType servoArmType, String[] name, HardwareMap hardwareMap){
         armServo1 = hardwareMap.get(Servo.class, name[0]);
         armServo2 = hardwareMap.get(Servo.class, name[1]);

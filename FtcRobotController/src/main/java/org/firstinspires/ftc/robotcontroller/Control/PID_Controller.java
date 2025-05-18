@@ -9,7 +9,7 @@ public class PID_Controller {
 
     public double tolerance;
 
-    public PIDCoefficients coeffs;
+    public PIDCoefficients coefficients;
     public double a;
 
     public double error;
@@ -29,23 +29,21 @@ public class PID_Controller {
 
     public double errorChange;
 
-    @Deprecated
     public PID_Controller(double p) {
-        this.coeffs = new PIDCoefficients(p, 0, 0);
+        this.coefficients = new PIDCoefficients(p, 0, 0);
         this.a = 0;
     }
-    @Deprecated
+
     public PID_Controller(double p, double d, double i) {
-        this.coeffs = new PIDCoefficients(p, i, d);
+        this.coefficients = new PIDCoefficients(p, i, d);
         this.a = 0;
     }
-    @Deprecated
     public PID_Controller(double p, double d, double i, double a) {
-        this.coeffs = new PIDCoefficients(p, i, d);
+        this.coefficients = new PIDCoefficients(p, i, d);
         this.a = a;
     }
-    public PID_Controller(PIDCoefficients coeffs, double a){
-        this.coeffs = coeffs;
+    public PID_Controller(PIDCoefficients coefficients, double a){
+        this.coefficients = coefficients;
         this.a = a;
     }
 
@@ -53,7 +51,7 @@ public class PID_Controller {
         error = targetPos - currPos;
         errorChange = error - previousError;
 
-        P = coeffs.p*error;
+        P = coefficients.p*error;
 
         deltaTime = runtime.seconds();
         runtime.reset();
@@ -63,11 +61,11 @@ public class PID_Controller {
         if (Math.abs(error) < tolerance) area = 0;
         if (targetPos != previousTarget) area = 0;
 
-        I = area*coeffs.i;
+        I = area*coefficients.i;
 
         currentFilterEstimate = (1-a) * errorChange + (a * previousFilterEstimate);
 
-        D = coeffs.d * (currentFilterEstimate / deltaTime);
+        D = coefficients.d * (currentFilterEstimate / deltaTime);
 
         previousError = error;
         previousFilterEstimate = currentFilterEstimate;
@@ -76,50 +74,27 @@ public class PID_Controller {
         return P + I + D;
     }
 
-
-    public double PID_PowerBasic(double currPos, double targetPos){
-        error = targetPos - currPos;
-
-        errorChange = error - previousError;
-
-        P = coeffs.p*error;
-
-        deltaTime = runtime.seconds();
-        runtime.reset();
-
-        D = coeffs.d * (errorChange / deltaTime);
-
-        area += error*deltaTime;
-
-        I = area*coeffs.i;
-
-        previousError = error;
-        previousFilterEstimate = currentFilterEstimate;
-        previousTarget = targetPos;
-
-        return P + I + D;
-    }
 
 
     public void setPIDCoefficients(double kp){
-        this.coeffs.p = kp;
+        this.coefficients.p = kp;
     }
 
     public void setPIDCoefficients(double kp, double kd){
-        this.coeffs.p = kp;
-        this.coeffs.d = kd;
+        this.coefficients.p = kp;
+        this.coefficients.d = kd;
     }
 
     public void setPIDCoefficients(double kp, double kd, double a){
-        this.coeffs.p = kp;
-        this.coeffs.d = kd;
+        this.coefficients.p = kp;
+        this.coefficients.d = kd;
         this.a = a;
     }
 
     public void setPIDCoefficients(double kp, double kd, double a, double ki){
-        this.coeffs.p = kp;
-        this.coeffs.d = kd;
+        this.coefficients.p = kp;
+        this.coefficients.d = kd;
         this.a = a;
-        this.coeffs.i = ki;
+        this.coefficients.i = ki;
     }
 }

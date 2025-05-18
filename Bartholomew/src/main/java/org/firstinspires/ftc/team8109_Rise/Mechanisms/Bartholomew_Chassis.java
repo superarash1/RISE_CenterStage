@@ -153,8 +153,8 @@ public class Bartholomew_Chassis extends MecanumDriveTrain {
     }
 
     public void goToPoseTrapezoidal(Vector3D input){
-        odoDrive = -TranslationalProfile_X.getProfilePower(getPoseEstimate().getX(), input.A);
-        odoStrafe = -TranslationalProfile_Y.getProfilePower(getPoseEstimate().getY(), input.B);
+        odoDrive = -TranslationalProfile_X.getPosProfilePower(getPoseEstimate().getX(), input.A);
+        odoStrafe = -TranslationalProfile_Y.getPosProfilePower(getPoseEstimate().getY(), input.B);
         odoTurn = -HeadingPID.PID_Power(angleWrap(getPoseEstimate().getHeading()), input.C);
 
         odoPID_Vector.set(odoDrive, odoStrafe, odoTurn);

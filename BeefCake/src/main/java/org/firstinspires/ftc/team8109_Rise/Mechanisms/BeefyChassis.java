@@ -93,7 +93,7 @@ public class BeefyChassis extends MecanumDriveTrain {
 
     // All parameters in this method are vector valued functions (potentially bake parametric equations into the vector class Vector3D.t global  variable for instance)
     public void followParametricEquation(Vector3D velocity, Vector3D idealPosition, double currentArcLength, double totalArcLength){
-        double speed = velocityController.getProfilePower(currentArcLength, totalArcLength);
+        double speed = velocityController.getPosProfilePower(currentArcLength, totalArcLength);
         Vector3D velocityNormalized = velocity.normalize();
         Vector3D idealOutput = velocityNormalized.scale(speed);
 
@@ -106,8 +106,8 @@ public class BeefyChassis extends MecanumDriveTrain {
     }
 
     public void goToPoseTrapezoidal(Vector3D input){
-        odoDrive = -TranslationalProfile_X.getProfilePower(getPoseEstimate().getX(), input.A);
-        odoStrafe = -TranslationalProfile_Y.getProfilePower(getPoseEstimate().getY(), input.B);
+        odoDrive = -TranslationalProfile_X.getPosProfilePower(getPoseEstimate().getX(), input.A);
+        odoStrafe = -TranslationalProfile_Y.getPosProfilePower(getPoseEstimate().getY(), input.B);
         odoTurn = -HeadingPID.PID_Power(angleWrap(getPoseEstimate().getHeading()), input.C);
 
         odoPID_Vector.set(odoDrive, odoStrafe, odoTurn);

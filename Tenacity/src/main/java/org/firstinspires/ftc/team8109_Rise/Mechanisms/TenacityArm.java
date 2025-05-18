@@ -41,7 +41,7 @@ public class TenacityArm extends MotorArm {
     public ArmState armState;
 
 
-    public static PIDCoefficients PID_COEFFS = new PIDCoefficients(0.04, 0.0025, 0.003);
+    public static PIDCoefficients ARM_PID_COEFFICIENTS = new PIDCoefficients(0.04, 0.0025, 0.003);
     public static double ANGLE = -11;
     public static double K_GRAVITY = 0.022;
 
@@ -49,11 +49,7 @@ public class TenacityArm extends MotorArm {
     public TenacityArm(Slides slides, Gamepad gamepad1, Telemetry telemetry, HardwareMap hardwareMap) {
         super(2, names, 28, 0.0091, 0.1, 45, hardwareMap);
 
-//        motors[0].setDirectionReverse();
-//        motors[1].setDirectionReverse();
-
-        //0.0001
-        ArmPID = new PID_Controller(PID_COEFFS, 0);
+        ArmPID = new PID_Controller(ARM_PID_COEFFICIENTS, 0);
 
         ArmPID.tolerance = 0.75;
 

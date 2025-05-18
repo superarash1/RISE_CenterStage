@@ -50,7 +50,7 @@ public class Tenacity_TeleOp extends LinearOpMode {
         while (opModeInInit()){
             slides.setSlidePower();
 //            arm.setArmPower();
-//            doubleClaw.setClawOpen();
+            doubleClaw.setClawOpen();
             wrist.setWristPosition();
 
             telemetry.addLine("Waiting For Start");
@@ -64,8 +64,6 @@ public class Tenacity_TeleOp extends LinearOpMode {
             slides.setSlidePower();
 
             doubleClaw.toggleClaw();
-            doubleClaw.toggleLeftClaw();
-            doubleClaw.toggleRightClaw();
 
             wrist.setWristPosition();
             switch (teleOpState){
